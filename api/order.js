@@ -62,8 +62,8 @@ module.exports = async (req, res) => {
     };
     await L.redis('HSET', 'neetaa:orders', orderId, JSON.stringify(order));
 
-    // Instant WhatsApp alert to the owner (never blocks or fails the customer's order)
-    const alert = await L.sendAlert(L.orderMessage(order, req.headers.host), `🧁 New Order #${orderNo}`, order);
+    // Instant alert to the owner (ntfy push / WhatsApp — never blocks or fails the customer's order)
+    const alert = await L.sendAlert(L.orderMessage(order, req.headers.host), `New Order #${orderNo} - ${name}`, order, req.headers.host);
     order.notify_status = alert.status;
     order.notify_detail = alert.detail;
     try { await L.redis('HSET', 'neetaa:orders', orderId, JSON.stringify(order)); } catch (e) {}

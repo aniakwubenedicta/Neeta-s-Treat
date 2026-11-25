@@ -197,14 +197,57 @@ async function sendCallMeBot(text) {
   } finally { clearTimeout(timer); }
 }
 
-async function sendAlert(text, subject, order) {
+async function sendNtfy(text, subject, order, host) {
+  let topic = String(process.env.NTFY_TOPIC || '').trim();
+  if (!topic) return null;
+  const url = /^https?:\/\//i.test(topic)
+    ? topic
+    : 'https://ntfy.sh/' + encodeURIComponent(topic.replace(/^\/+/, ''));
+  // HTTP headers must be pure ASCII in Node fetch (no ₦ or emojis in headers; body supports full UTF-8)
+  const asciiTitle = String(subject || "New Order - Neetaa's Treats").replace(/[^\x20-\x7E]/g, '').trim() || "New Order - Neetaa's Treats";
+  const headers = {
+    'Content-Type': 'text/plain; charset=utf-8',
+    'Title': asciiTitle.slice(0, 120),
+    'Priority': 'high',
+    'Tags': 'cake,bell'
+  };
+  const actions = [];
+  if (order && order.phone) {
+    const waNum = waCustomerPhone(order.phone);
+    if (waNum.length >= 10) {
+      const replyText = `Hello ${order.customer_name}, we received your Neetaa's Treats order #${order.order_no} (${naira(order.total)})!`;
+      actions.push(`view, Chat on WhatsApp, https://wa.me/${waNum}?text=${encodeURIComponent(replyText)}`);
+    }
+  }
+  if (host) {
+    actions.push(`view, Open Dashboard, https://${host}/admin.html`);
+    headers['Click'] = `https://${host}/admin.html`;
+  }
+  if (actions.length) headers['Actions'] = actions.join('; ');
+  if (process.env.NTFY_TOKEN) headers['Authorization'] = 'Bearer ' + String(process.env.NTFY_TOKEN).trim();
+
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 8000);
+  try {
+    const r = await fetch(url, { method: 'POST', headers, body: String(text || ''), signal: ctl.signal });
+    const body = (await r.text()).trim().slice(0, 120);
+    return r.ok
+      ? { channel: 'ntfy', status: 'sent', detail: 'ntfy push' }
+      : { channel: 'ntfy', status: 'failed', detail: 'ntfy: ' + r.status + ' ' + body };
+  } catch (e) {
+    return { channel: 'ntfy', status: 'failed', detail: 'ntfy: ' + (e.name === 'AbortError' ? 'timed out' : e.message) };
+  } finally { clearTimeout(timer); }
+}
+
+async function sendAlert(text, subject, order, host) {
   const attempts = (await Promise.all([
+    sendNtfy(text, subject, order, host),
     sendMetaWhatsApp(text, order),
     sendTextMeBot(text),
     sendCallMeBot(text)
   ])).filter(Boolean);
   if (!attempts.length) {
-    return { status: 'not_configured', detail: 'Add your WhatsApp alert keys in Vercel (Meta WhatsApp Cloud API or TextMeBot).' };
+    return { status: 'not_configured', detail: 'Add NTFY_TOPIC in Vercel (Settings -> Environment Variables), then redeploy.' };
   }
   const ok = attempts.filter(a => a.status === 'sent');
   const bad = attempts.filter(a => a.status !== 'sent');
