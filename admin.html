@@ -132,10 +132,11 @@ table{width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-
   </div>
 
   <!-- SETTINGS -->
-  <div id="tab-settings" class="hidden"><div class="panel"><h2>Website settings</h2><div class="small">These appear on your public website and in WhatsApp orders.</div>
+  <div id="tab-settings" class="hidden"><div class="panel"><h2>Website settings</h2><div class="small">These appear on your public website, bank payment popup, and WhatsApp links.</div>
     <form id="settingsForm"><label>WhatsApp number (international format, digits only)</label><input id="st_whatsapp_number" placeholder="2349066434486">
+      <div class="grid3"><div><label>Bank name</label><input id="st_bank_name" placeholder="Access Bank"></div><div><label>Account number</label><input id="st_account_number" placeholder="0765437378"></div><div><label>Account name</label><input id="st_account_name" placeholder="Aniakwu Benedicta O"></div></div>
       <label>Delivery fee (₦) — 0 means free / quoted on WhatsApp</label><input id="st_delivery_fee" type="number" min="0" step="50">
-      <label>Delivery information</label><input id="st_delivery_info"><label>Payment instructions (shown after an order, e.g. bank details)</label><textarea id="st_payment_instructions"></textarea>
+      <label>Delivery information</label><input id="st_delivery_info"><label>Payment note (shown after confirming an order)</label><textarea id="st_payment_instructions"></textarea>
       <label>Ordering note (e.g. lead time)</label><input id="st_lead_time_note"><p><button type="submit">Save settings</button></p></form></div>
     <div class="panel" id="alertPanel"><h2>Instant phone order alerts (ntfy)</h2><div class="small">Every new order placed on your website is saved in <b>Orders</b> and pushed to your phone via <b>ntfy</b> with a 1-tap button to chat the customer on WhatsApp.</div>
       <p><button type="button" id="testNotifyBtn" class="secondary">Send a test phone alert</button></p><div id="testNotifyMsg" class="status hidden" role="status"></div></div>
@@ -409,7 +410,7 @@ function renderOrders(){
   if(q)list=list.filter(o=>(o.customer_name+' '+o.phone+' #'+o.order_no).toLowerCase().includes(q));
   $('orderList').innerHTML=list.length?list.map(o=>`<div class="card"><div class="row between"><div><b>#${o.order_no}</b> · ${esc(o.customer_name)} · <a href="https://wa.me/${waPhone(o.phone)}" target="_blank" rel="noopener">${esc(o.phone)}</a><div class="small">${fmtDT(o.created_at)} · ${esc(o.channel)} · ${o.delivery_method==='pickup'?'Pickup':'Delivery'}${o.needed_by?` · <b>needed ${esc(o.needed_by)}</b>`:''}</div></div><div class="fit" style="text-align:right"><div style="font:500 22px Georgia,serif">${money(o.total)}</div><span class="pill ${o.payment_status}">${o.payment_status}</span></div></div>
     <div style="margin:8px 0">${(o.order_items||[]).map(i=>`<div class="line"><span>${i.qty} × ${esc(i.name)} <span class="small">(${esc(i.category||'')})</span></span><span>${money(i.line_total)}</span></div>`).join('')}${Number(o.delivery_fee)?`<div class="line"><span>Delivery</span><span>${money(o.delivery_fee)}</span></div>`:''}</div>
-    ${o.address?`<div class="small">📍 ${esc(o.address)}</div>`:''}${o.notes?`<div class="small">📝 ${esc(o.notes)}</div>`:''}${o.notify_status?`<div class="small">🔔 Order alert: <b>${esc(o.notify_status==='sent'?'sent ('+(o.notify_detail||'ok')+')':o.notify_status==='not_configured'?'not switched on':o.notify_status)}</b></div>`:''}
+    ${o.address?`<div class="small">📍 ${esc(o.address)}</div>`:''}${o.notes?`<div class="small">📝 ${esc(o.notes)}</div>`:''}${o.receipt_url?`<div style="margin-top:8px"><div class="small"><b>🧾 Payment receipt uploaded:</b></div>${String(o.receipt_url).endsWith('.pdf')||String(o.receipt_url).startsWith('data:application/pdf')?`<a class="button secondary mini" style="margin-top:4px" href="${esc(o.receipt_url)}" target="_blank" rel="noopener">Open PDF receipt ↗</a>`:`<a href="${esc(o.receipt_url)}" target="_blank" rel="noopener" title="Open full receipt"><img src="${esc(o.receipt_url)}" alt="Payment receipt" class="preview" style="display:block;border:1px solid var(--line)"></a>`}</div>`:''}${o.notify_status?`<div class="small" style="margin-top:4px">🔔 Order alert: <b>${esc(o.notify_status==='sent'?'sent ('+(o.notify_detail||'ok')+')':o.notify_status==='not_configured'?'not switched on':o.notify_status)}</b></div>`:''}
     <div class="row" style="margin-top:10px"><select data-status="${o.id}" style="max-width:190px">${STATUSES.map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${s[0].toUpperCase()+s.slice(1)}</option>`).join('')}</select>
     <button class="mini fit ${o.payment_status==='paid'?'secondary':'green'}" data-pay="${o.id}">${o.payment_status==='paid'?'Mark unpaid':'Mark as paid'}</button><button class="mini danger fit" data-delorder="${o.id}">Delete</button></div></div>`).join(''):'<p class="muted" style="margin-top:14px">No orders to show.</p>'}
 $('orderFilter').addEventListener('change',renderOrders);$('orderSearch').addEventListener('input',renderOrders);
@@ -456,8 +457,8 @@ $('expForm').addEventListener('submit',async e=>{e.preventDefault();try{await mu
 $('expRows').addEventListener('click',async e=>{const b=e.target.closest('[data-delexp]');if(!b||!confirm('Delete this cost?'))return;try{await must(sb.from('expenses').delete().eq('id',b.dataset.delexp));await loadSupplyData();renderSupplies()}catch(err){fail(err)}});
 
 /* ===== SETTINGS ===== */
-const SET_KEYS=['whatsapp_number','delivery_fee','delivery_info','payment_instructions','lead_time_note'];
-async function loadSettings(){const rows=await must(sb.from('settings').select('*'));S.settings={};rows.forEach(r=>S.settings[r.key]=r.value)}
+const SET_KEYS=['whatsapp_number','bank_name','account_number','account_name','delivery_fee','delivery_info','payment_instructions','lead_time_note'];
+async function loadSettings(){const rows=await must(sb.from('settings').select('*'));S.settings={bank_name:'Access Bank',account_number:'0765437378',account_name:'Aniakwu Benedicta O'};rows.forEach(r=>S.settings[r.key]=r.value)}
 function fillSettings(){SET_KEYS.forEach(k=>$('st_'+k).value=S.settings[k]||'')}
 $('settingsForm').addEventListener('submit',async e=>{e.preventDefault();try{const rows=SET_KEYS.map(k=>({key:k,value:String($('st_'+k).value||'').trim()}));rows.find(r=>r.key==='whatsapp_number').value=rows.find(r=>r.key==='whatsapp_number').value.replace(/\D/g,'');await must(sb.from('settings').upsert(rows));await loadSettings();say('Settings saved — live on your website.','ok')}catch(err){fail(err)}});
 

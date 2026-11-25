@@ -90,6 +90,11 @@ module.exports = async (req, res) => {
     if (req.method === 'DELETE') {
       const id = L.query(req).get('id');
       if (!id) return L.send(res, 400, { error: 'Missing id.' });
+      try {
+        const raw = await L.redis('HGET', HASH, id);
+        const o = raw ? JSON.parse(raw) : null;
+        if (o && o.receipt_path) await L.redis('DEL', 'neetaa:img:' + o.receipt_path);
+      } catch (e) {}
       await L.redis('HDEL', HASH, id);
       return L.send(res, 200, { ok: true });
     }

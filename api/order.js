@@ -47,6 +47,18 @@ module.exports = async (req, res) => {
       lines.push({ id: L.crypto.randomUUID(), order_id: orderId, product_id: p.id, name: p.name, category: p.category, unit_price: Number(p.price), qty, line_total: lineTotal });
     }
 
+    let receiptUrl = null, receiptPath = null;
+    if (b.p_receipt) {
+      const rm = /^data:(image\/(jpeg|png|webp)|application\/pdf);base64,[A-Za-z0-9+/=]+$/.exec(String(b.p_receipt));
+      if (!rm || String(b.p_receipt).length > 3.2e6) {
+        return L.send(res, 400, { error: 'Please upload a valid receipt image (JPG/PNG/WebP) or PDF under 2 MB.' });
+      }
+      const ext = rm[1] === 'application/pdf' ? 'pdf' : (rm[2] === 'jpeg' ? 'jpg' : rm[2]);
+      receiptPath = `receipts/${L.crypto.randomUUID()}.${ext}`;
+      await L.redis('SET', 'neetaa:img:' + receiptPath, String(b.p_receipt));
+      receiptUrl = '/api/img?id=' + encodeURIComponent(receiptPath);
+    }
+
     const orderNo = 1000 + (await L.redis('INCR', 'neetaa:orderno'));
     const now = new Date().toISOString();
     const order = {
@@ -58,6 +70,7 @@ module.exports = async (req, res) => {
       notes: String(b.p_notes || '').trim().slice(0, 1000) || null,
       channel: 'website', status: 'new', payment_status: 'unpaid',
       subtotal, delivery_fee: fee, total: subtotal + fee,
+      receipt_url: receiptUrl, receipt_path: receiptPath,
       order_items: lines, notify_status: 'pending'
     };
     await L.redis('HSET', 'neetaa:orders', orderId, JSON.stringify(order));

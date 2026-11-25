@@ -66,7 +66,10 @@
     { key: 'whatsapp_number', value: '2349066434486' },
     { key: 'delivery_fee', value: '0' },
     { key: 'delivery_info', value: 'Delivery available across Lagos' },
-    { key: 'payment_instructions', value: 'Pay by bank transfer after we confirm your order on WhatsApp. Pay on delivery is also available.' },
+    { key: 'bank_name', value: 'Access Bank' },
+    { key: 'account_number', value: '0765437378' },
+    { key: 'account_name', value: 'Aniakwu Benedicta O' },
+    { key: 'payment_instructions', value: 'Transfer to Access Bank · 0765437378 · Aniakwu Benedicta O and upload your receipt.' },
     { key: 'lead_time_note', value: 'Please order at least 2 days ahead for celebration cakes.' }
   ];
 
@@ -579,7 +582,9 @@
           payment_status: 'unpaid',
           subtotal,
           delivery_fee: fee,
-          total: subtotal + fee
+          total: subtotal + fee,
+          receipt_url: args.p_receipt || null,
+          receipt_path: null
         };
 
         db.orders.push(order);

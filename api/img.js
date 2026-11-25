@@ -14,10 +14,11 @@ module.exports = async (req, res) => {
       const id = L.query(req).get('id');
       if (!okId(id)) return L.send(res, 400, { error: 'Bad id' });
       const v = await L.redis('GET', 'neetaa:img:' + id);
-      const m = /^data:(image\/(?:jpeg|png|webp));base64,(.+)$/.exec(v || '');
+      const m = /^data:(image\/(?:jpeg|png|webp)|application\/pdf);base64,(.+)$/.exec(v || '');
       if (!m) return L.send(res, 404, { error: 'Not found' });
       res.statusCode = 200;
       res.setHeader('Content-Type', m[1]);
+      if (m[1] === 'application/pdf') res.setHeader('Content-Disposition', 'inline; filename="receipt.pdf"');
       res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
       return res.end(Buffer.from(m[2], 'base64'));
     }

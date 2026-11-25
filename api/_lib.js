@@ -219,6 +219,9 @@ async function sendNtfy(text, subject, order, host) {
       actions.push(`view, Chat on WhatsApp, https://wa.me/${waNum}?text=${encodeURIComponent(replyText)}`);
     }
   }
+  if (order && order.receipt_url && host) {
+    actions.push(`view, View Receipt, https://${host}${order.receipt_url}`);
+  }
   if (host) {
     actions.push(`view, Open Dashboard, https://${host}/admin.html`);
     headers['Click'] = `https://${host}/admin.html`;
@@ -282,6 +285,7 @@ function orderMessage(o, host) {
     `Subtotal: ${naira(o.subtotal)}`,
     Number(o.delivery_fee) ? `Delivery: ${naira(o.delivery_fee)}` : null,
     `TOTAL: ${naira(o.total)}`,
+    o.receipt_url ? `Payment receipt: Uploaded${host ? ' (https://' + host + o.receipt_url + ')' : ''}` : 'Payment receipt: Not attached',
     o.notes ? `\nNotes: ${o.notes}` : null,
     waReply ? `\nChat customer on WhatsApp:\n${waReply}` : null,
     host ? `\nDashboard: https://${host}/admin.html` : null
