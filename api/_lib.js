@@ -86,53 +86,96 @@ async function rateLimit(key, max, windowSec) {
   return n <= max;
 }
 
-/* ---------- Instant order alerts to the owner (Telegram primary, optional Email / CallMeBot) ---------- */
-async function sendTelegram(text) {
-  const token = String(process.env.TELEGRAM_BOT_TOKEN || '').trim();
-  const chatId = String(process.env.TELEGRAM_CHAT_ID || '').trim();
-  if (!token || !chatId) return null;
-  const ctl = new AbortController();
-  const timer = setTimeout(() => ctl.abort(), 7000);
-  try {
-    const r = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text, disable_web_page_preview: true }),
-      signal: ctl.signal
-    });
-    const j = await r.json().catch(() => ({}));
-    return r.ok && j.ok
-      ? { channel: 'Telegram', status: 'sent', detail: 'Telegram' }
-      : { channel: 'Telegram', status: 'failed', detail: 'Telegram: ' + (j.description || r.status) };
-  } catch (e) {
-    return { channel: 'Telegram', status: 'failed', detail: 'Telegram: ' + (e.name === 'AbortError' ? 'timed out' : e.message) };
-  } finally { clearTimeout(timer); }
-}
+/* ---------- Instant WhatsApp order alerts to the owner ----------
+   Supports (use whichever you configure in Vercel):
+   1. Official Meta WhatsApp Cloud API (WHATSAPP_ACCESS_TOKEN + WHATSAPP_PHONE_NUMBER_ID + NOTIFY_WHATSAPP)
+   2. TextMeBot free WhatsApp API      (TEXTMEBOT_APIKEY + NOTIFY_WHATSAPP)
+   3. CallMeBot free WhatsApp API      (CALLMEBOT_APIKEY + NOTIFY_WHATSAPP)
+   (Optional Telegram / Resend email also work if their env vars are set.) */
 
-async function sendResendEmail(text, subject) {
-  const key = String(process.env.RESEND_API_KEY || '').trim();
-  const to = String(process.env.NOTIFY_EMAIL || '').trim();
-  if (!key || !to) return null;
+const cleanParam = s => String(s || '-').replace(/[\r\n\t]+/g, ' | ').replace(/ {4,}/g, ' ').trim().slice(0, 900) || '-';
+
+async function sendMetaWhatsApp(text, order) {
+  const token = String(process.env.WHATSAPP_ACCESS_TOKEN || '').trim();
+  const phoneId = String(process.env.WHATSAPP_PHONE_NUMBER_ID || '').trim();
+  const to = String(process.env.NOTIFY_WHATSAPP || '').replace(/\D/g, '');
+  if (!token || !phoneId || !to) return null;
+
+  const tplName = String(process.env.WHATSAPP_TEMPLATE_NAME || '').trim();
+  const tplLang = String(process.env.WHATSAPP_TEMPLATE_LANG || 'en_US').trim();
+  let payload;
+  if (tplName === 'hello_world') {
+    payload = { messaging_product: 'whatsapp', to, type: 'template', template: { name: 'hello_world', language: { code: tplLang } } };
+  } else if (tplName) {
+    const o = order || {
+      order_no: 'TEST', customer_name: 'Test Customer', phone: to,
+      order_items: [{ qty: 1, name: 'Vanilla Cake', category: 'Test' }],
+      total: 10000, delivery_method: 'delivery', address: 'WhatsApp alerts are working!'
+    };
+    const itemsStr = (o.order_items || []).map(i => `${i.qty}x ${i.name}${i.category ? ' (' + i.category + ')' : ''}`).join(', ');
+    const details = [
+      o.delivery_method === 'pickup' ? 'Pickup' : ('Delivery: ' + (o.address || '-')),
+      o.needed_by ? 'Needed: ' + o.needed_by : null,
+      o.notes ? 'Notes: ' + o.notes : null
+    ].filter(Boolean).join(' | ');
+    payload = {
+      messaging_product: 'whatsapp', to, type: 'template',
+      template: {
+        name: tplName,
+        language: { code: tplLang },
+        components: [{
+          type: 'body',
+          parameters: [
+            { type: 'text', text: cleanParam(o.order_no) },
+            { type: 'text', text: cleanParam(o.customer_name) },
+            { type: 'text', text: cleanParam(o.phone) },
+            { type: 'text', text: cleanParam(itemsStr) },
+            { type: 'text', text: cleanParam(naira(o.total)) },
+            { type: 'text', text: cleanParam(details) }
+          ]
+        }]
+      }
+    };
+  } else {
+    payload = { messaging_product: 'whatsapp', to, type: 'text', text: { preview_url: false, body: String(text || '').slice(0, 4000) } };
+  }
+
   const ctl = new AbortController();
-  const timer = setTimeout(() => ctl.abort(), 7000);
+  const timer = setTimeout(() => ctl.abort(), 8000);
   try {
-    const r = await fetch('https://api.resend.com/emails', {
+    const r = await fetch(`https://graph.facebook.com/v22.0/${encodeURIComponent(phoneId)}/messages`, {
       method: 'POST',
-      headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: process.env.RESEND_FROM || "Neetaa's Treats <onboarding@resend.dev>",
-        to: [to],
-        subject: subject || "🧁 New Order — Neetaa's Treats",
-        text
-      }),
+      headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
       signal: ctl.signal
     });
     const j = await r.json().catch(() => ({}));
     return r.ok
-      ? { channel: 'Email', status: 'sent', detail: 'Email' }
-      : { channel: 'Email', status: 'failed', detail: 'Email: ' + (j.message || r.status) };
+      ? { channel: 'WhatsApp (Meta)', status: 'sent', detail: 'WhatsApp (Meta)' }
+      : { channel: 'WhatsApp (Meta)', status: 'failed', detail: 'Meta WhatsApp: ' + ((j.error && j.error.message) || r.status) };
   } catch (e) {
-    return { channel: 'Email', status: 'failed', detail: 'Email: ' + (e.name === 'AbortError' ? 'timed out' : e.message) };
+    return { channel: 'WhatsApp (Meta)', status: 'failed', detail: 'Meta WhatsApp: ' + (e.name === 'AbortError' ? 'timed out' : e.message) };
+  } finally { clearTimeout(timer); }
+}
+
+async function sendTextMeBot(text) {
+  const apikey = String(process.env.TEXTMEBOT_APIKEY || '').trim();
+  const phone = String(process.env.NOTIFY_WHATSAPP || '').replace(/\D/g, '');
+  if (!apikey || !phone) return null;
+  const url = 'https://api.textmebot.com/send.php?' + new URLSearchParams({ recipient: '+' + phone, apikey, text, json: 'yes' }).toString();
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 8000);
+  try {
+    const r = await fetch(url, { signal: ctl.signal });
+    const raw = await r.text();
+    let j = null; try { j = JSON.parse(raw); } catch (e) {}
+    const ok = r.ok && (!j || j.status === 'success' || /success/i.test(raw));
+    const msg = (j && (j.comment || j.message)) || raw.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 120);
+    return ok
+      ? { channel: 'WhatsApp (TextMeBot)', status: 'sent', detail: 'WhatsApp (TextMeBot)' }
+      : { channel: 'WhatsApp (TextMeBot)', status: 'failed', detail: 'TextMeBot: ' + (msg || r.status) };
+  } catch (e) {
+    return { channel: 'WhatsApp (TextMeBot)', status: 'failed', detail: 'TextMeBot: ' + (e.name === 'AbortError' ? 'timed out' : e.message) };
   } finally { clearTimeout(timer); }
 }
 
@@ -142,26 +185,26 @@ async function sendCallMeBot(text) {
   if (!apikey || !phone) return null;
   const url = 'https://api.callmebot.com/whatsapp.php?' + new URLSearchParams({ phone: '+' + phone, text, apikey }).toString();
   const ctl = new AbortController();
-  const timer = setTimeout(() => ctl.abort(), 7000);
+  const timer = setTimeout(() => ctl.abort(), 8000);
   try {
     const r = await fetch(url, { signal: ctl.signal });
     const body = (await r.text()).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 120);
     return r.ok
-      ? { channel: 'WhatsApp', status: 'sent', detail: 'WhatsApp' }
-      : { channel: 'WhatsApp', status: 'failed', detail: 'WhatsApp: ' + r.status + ' ' + body };
+      ? { channel: 'WhatsApp (CallMeBot)', status: 'sent', detail: 'WhatsApp (CallMeBot)' }
+      : { channel: 'WhatsApp (CallMeBot)', status: 'failed', detail: 'CallMeBot: ' + r.status + ' ' + body };
   } catch (e) {
-    return { channel: 'WhatsApp', status: 'failed', detail: 'WhatsApp: ' + (e.name === 'AbortError' ? 'timed out' : e.message) };
+    return { channel: 'WhatsApp (CallMeBot)', status: 'failed', detail: 'CallMeBot: ' + (e.name === 'AbortError' ? 'timed out' : e.message) };
   } finally { clearTimeout(timer); }
 }
 
-async function sendAlert(text, subject) {
+async function sendAlert(text, subject, order) {
   const attempts = (await Promise.all([
-    sendTelegram(text),
-    sendResendEmail(text, subject),
+    sendMetaWhatsApp(text, order),
+    sendTextMeBot(text),
     sendCallMeBot(text)
   ])).filter(Boolean);
   if (!attempts.length) {
-    return { status: 'not_configured', detail: 'Add TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in Vercel.' };
+    return { status: 'not_configured', detail: 'Add your WhatsApp alert keys in Vercel (Meta WhatsApp Cloud API or TextMeBot).' };
   }
   const ok = attempts.filter(a => a.status === 'sent');
   const bad = attempts.filter(a => a.status !== 'sent');

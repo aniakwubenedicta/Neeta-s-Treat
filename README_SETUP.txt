@@ -2,37 +2,40 @@ NEETAA'S TREATS — WEBSITE + ORDERS + DASHBOARD  (hosted on Vercel)
 
 HOW IT WORKS
 - Customers pick items, tap "Place your order", and the order is saved to your dashboard.
-- You get an instant Telegram message on your phone with the full order details + a 1-tap WhatsApp link to message the customer back!
+- You get an automatic WhatsApp message with every order's details + a 1-tap link to chat the customer back.
 - "Chat with us on WhatsApp" buttons open a normal WhatsApp chat for questions and custom cake quotes.
 - Dashboard: /admin.html (Overview, Orders, Products & prices, Reviews, Supplies & costs, Settings).
-  Prices, photos, stock status and reviews you change there appear on the website for everyone.
 
-GO LIVE ON VERCEL (one-time, ~5 minutes)
-1. Push any updates to GitHub (in GitHub Desktop, click "Push origin"). Vercel auto-deploys.
-2. Database: in your Vercel project open the Storage tab -> Create -> "Upstash for Redis" (free plan)
-   -> connect it to the project. This adds KV_REST_API_URL and KV_REST_API_TOKEN automatically.
-3. Admin login: Project -> Settings -> Environment Variables, add:
-      ADMIN_EMAIL     = the email you will sign in with
-      ADMIN_PASSWORD  = a long, strong password
-4. Instant Order Alerts on your phone (Telegram Bot — 100% free, takes 2 minutes):
-   a. Open Telegram on your phone and search for  @BotFather  (verified blue check).
-   b. Tap Start, send  /newbot , pick a name (e.g. Neetaa Orders) and a username ending in "bot"
-      (e.g. neetaa_orders_bot).
-   c. BotFather replies with your HTTP API token (looks like 123456789:AAH...).
-      Save that as  TELEGRAM_BOT_TOKEN  in Vercel.
-   d. IMPORTANT: open your new bot (tap the t.me/... link BotFather gave you) and tap Start!
-   e. In Telegram, search for  @userinfobot , tap Start, and copy your numeric "Id" (e.g. 987654321).
-      Save that as  TELEGRAM_CHAT_ID  in Vercel.
-5. (Optional) Email backup alerts: sign up free at resend.com, create an API key, and add
-   RESEND_API_KEY and NOTIFY_EMAIL in Vercel to also receive every order by email.
-6. Redeploy in Vercel (Deployments -> ... -> Redeploy) so the new Environment Variables take effect.
-7. IMPORTANT first login: open YOUR-SITE/admin.html and sign in once. This publishes your menu to the live
-   site. Until you do, online ordering stays closed.
-8. In Dashboard -> Settings, press "Send a test order alert" and check Telegram! Then place a test order
-   on your website to see the full order message + 1-tap WhatsApp customer link.
+GO LIVE ON VERCEL
+1. Push updates in GitHub Desktop ("Push origin"). Vercel auto-deploys.
+2. Storage tab -> Create -> "Upstash for Redis" (free plan) -> connect to your project.
+3. Settings -> Environment Variables, add:
+      ADMIN_EMAIL     = your login email
+      ADMIN_PASSWORD  = your strong password
+      NOTIFY_WHATSAPP = 2349066434486
+4. Choose ONE WhatsApp alert provider and add its keys in Vercel:
 
-NOTES
-- To change the admin password, edit ADMIN_PASSWORD in Vercel and redeploy.
-- Never put secrets in GitHub. They live only in Vercel's Environment Variables.
-- Local preview (on your computer without Vercel) stores data in that browser only,
-  with login admin@neetaastreats.com / Neetaa2026! (does not exist on the live site).
+   OPTION A (FASTEST FREE WHATSAPP — TextMeBot, ~2 minutes):
+   a. Go to https://textmebot.com/ and request a free API key with your WhatsApp number.
+   b. Follow the link they email you to connect WhatsApp, then add in Vercel:
+      TEXTMEBOT_APIKEY = the key TextMeBot sent you
+
+   OPTION B (OFFICIAL & MOST RELIABLE — Meta WhatsApp Business Cloud API, ~₦10/order):
+   a. Go to https://developers.facebook.com/ -> My Apps -> Create App -> Business -> add "WhatsApp".
+   b. Under WhatsApp -> API Setup, copy your Phone Number ID and generate a Permanent System User Token
+      (Meta Business Settings -> Users -> System Users -> Generate Token with whatsapp_business_messaging).
+   c. Under WhatsApp Manager -> Message Templates, create a Utility template named:  new_order_alert
+      with this exact Body:
+        New Order #{{1}} from {{2}} ({{3}}).
+        Items: {{4}}.
+        Total: {{5}}.
+        Delivery/Notes: {{6}}.
+   d. In Vercel add:
+      WHATSAPP_ACCESS_TOKEN    = your permanent token
+      WHATSAPP_PHONE_NUMBER_ID = your Phone Number ID
+      WHATSAPP_TEMPLATE_NAME   = new_order_alert
+      WHATSAPP_TEMPLATE_LANG   = en_US
+
+5. Redeploy in Vercel (Deployments -> ... -> Redeploy).
+6. Sign in once at YOUR-SITE/admin.html to publish your menu live, then go to Settings ->
+   "Send a test WhatsApp alert".

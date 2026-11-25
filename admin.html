@@ -137,8 +137,8 @@ table{width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-
       <label>Delivery fee (₦) — 0 means free / quoted on WhatsApp</label><input id="st_delivery_fee" type="number" min="0" step="50">
       <label>Delivery information</label><input id="st_delivery_info"><label>Payment instructions (shown after an order, e.g. bank details)</label><textarea id="st_payment_instructions"></textarea>
       <label>Ordering note (e.g. lead time)</label><input id="st_lead_time_note"><p><button type="submit">Save settings</button></p></form></div>
-    <div class="panel" id="alertPanel"><h2>Instant order alerts</h2><div class="small">Every new order placed on your website is saved in <b>Orders</b> and sent to your phone automatically (via Telegram, with a 1-tap WhatsApp link to reply to the customer). Use the button to check it is working.</div>
-      <p><button type="button" id="testNotifyBtn" class="secondary">Send a test order alert</button></p><div id="testNotifyMsg" class="status hidden" role="status"></div></div>
+    <div class="panel" id="alertPanel"><h2>WhatsApp order alerts</h2><div class="small">Every new order placed on your website is saved in <b>Orders</b> and sent directly to your WhatsApp automatically. Use the button below to test it.</div>
+      <p><button type="button" id="testNotifyBtn" class="secondary">Send a test WhatsApp alert</button></p><div id="testNotifyMsg" class="status hidden" role="status"></div></div>
     <div class="panel" id="passPanel"><h2>Change administrator password</h2><div class="small">Update the password you use to sign in to this dashboard.</div>
       <form id="changePassForm"><div class="grid2"><div><label for="cp_new">New password</label><input id="cp_new" type="password" minlength="6" autocomplete="new-password" required></div><div><label for="cp_confirm">Confirm new password</label><input id="cp_confirm" type="password" minlength="6" autocomplete="new-password" required></div></div><p><button type="submit">Update password</button></p></form></div></div>
 </section>
@@ -184,8 +184,8 @@ $('forgotBtn').addEventListener('click',()=>{
 $('testNotifyBtn').addEventListener('click',async()=>{
   const el=$('testNotifyMsg'),b=$('testNotifyBtn');b.disabled=true;el.className='status';el.textContent='Sending…';
   try{const r=await window.NeetaaStore.testNotify();
-    if(r.status==='sent'){el.textContent='Sent! Check your phone now.'+(r.detail?' ('+r.detail+')':'');el.className='status ok'}
-    else if(r.status==='not_configured'){el.textContent='Alerts are not switched on yet. In Vercel add TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID (see README_SETUP.txt), then redeploy.';el.className='status error'}
+    if(r.status==='sent'){el.textContent='Sent! Check your WhatsApp now.'+(r.detail?' ('+r.detail+')':'');el.className='status ok'}
+    else if(r.status==='not_configured'){el.textContent='WhatsApp alerts are not switched on yet. In Vercel add NOTIFY_WHATSAPP and either TEXTMEBOT_APIKEY or your Meta WhatsApp Cloud API keys (see README_SETUP.txt), then redeploy.';el.className='status error'}
     else{el.textContent='The alert could not be sent: '+(r.detail||'unknown error');el.className='status error'}
   }catch(err){el.textContent=err.message;el.className='status error'}
   finally{b.disabled=false}
