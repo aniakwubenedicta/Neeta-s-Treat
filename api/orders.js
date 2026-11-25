@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
     if (req.method === 'POST') {
       const b = L.readBody(req);
       if (b.action === 'test_notify') {
-        const r = await L.sendWhatsApp("✅ Test from Neetaa's Treats: your order alerts are working. You'll get a message like this for every new order.");
+        const r = await L.sendAlert("✅ Test from Neetaa's Treats: your instant order alerts are working! You'll get a message like this (with a 1-tap WhatsApp link to the customer) for every new order.", "✅ Test Alert — Neetaa's Treats");
         return L.send(res, 200, r);
       }
       const rows = Array.isArray(b.rows) ? b.rows.slice(0, 50) : [];

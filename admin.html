@@ -137,8 +137,8 @@ table{width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-
       <label>Delivery fee (₦) — 0 means free / quoted on WhatsApp</label><input id="st_delivery_fee" type="number" min="0" step="50">
       <label>Delivery information</label><input id="st_delivery_info"><label>Payment instructions (shown after an order, e.g. bank details)</label><textarea id="st_payment_instructions"></textarea>
       <label>Ordering note (e.g. lead time)</label><input id="st_lead_time_note"><p><button type="submit">Save settings</button></p></form></div>
-    <div class="panel" id="alertPanel"><h2>WhatsApp order alerts</h2><div class="small">Every new order placed on your website is saved in <b>Orders</b> and sent to your WhatsApp automatically. Use the button to check it is working.</div>
-      <p><button type="button" id="testNotifyBtn" class="secondary">Send a test WhatsApp alert</button></p><div id="testNotifyMsg" class="status hidden" role="status"></div></div>
+    <div class="panel" id="alertPanel"><h2>Instant order alerts</h2><div class="small">Every new order placed on your website is saved in <b>Orders</b> and sent to your phone automatically (via Telegram, with a 1-tap WhatsApp link to reply to the customer). Use the button to check it is working.</div>
+      <p><button type="button" id="testNotifyBtn" class="secondary">Send a test order alert</button></p><div id="testNotifyMsg" class="status hidden" role="status"></div></div>
     <div class="panel" id="passPanel"><h2>Change administrator password</h2><div class="small">Update the password you use to sign in to this dashboard.</div>
       <form id="changePassForm"><div class="grid2"><div><label for="cp_new">New password</label><input id="cp_new" type="password" minlength="6" autocomplete="new-password" required></div><div><label for="cp_confirm">Confirm new password</label><input id="cp_confirm" type="password" minlength="6" autocomplete="new-password" required></div></div><p><button type="submit">Update password</button></p></form></div></div>
 </section>
@@ -184,8 +184,8 @@ $('forgotBtn').addEventListener('click',()=>{
 $('testNotifyBtn').addEventListener('click',async()=>{
   const el=$('testNotifyMsg'),b=$('testNotifyBtn');b.disabled=true;el.className='status';el.textContent='Sending…';
   try{const r=await window.NeetaaStore.testNotify();
-    if(r.status==='sent'){el.textContent='Sent! Check your WhatsApp now.'+(r.detail?' ('+r.detail+')':'');el.className='status ok'}
-    else if(r.status==='not_configured'){el.textContent='Alerts are not switched on yet. In Vercel add NOTIFY_WHATSAPP and CALLMEBOT_APIKEY (see README_SETUP.txt), then redeploy.';el.className='status error'}
+    if(r.status==='sent'){el.textContent='Sent! Check your phone now.'+(r.detail?' ('+r.detail+')':'');el.className='status ok'}
+    else if(r.status==='not_configured'){el.textContent='Alerts are not switched on yet. In Vercel add TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID (see README_SETUP.txt), then redeploy.';el.className='status error'}
     else{el.textContent='The alert could not be sent: '+(r.detail||'unknown error');el.className='status error'}
   }catch(err){el.textContent=err.message;el.className='status error'}
   finally{b.disabled=false}
@@ -409,7 +409,7 @@ function renderOrders(){
   if(q)list=list.filter(o=>(o.customer_name+' '+o.phone+' #'+o.order_no).toLowerCase().includes(q));
   $('orderList').innerHTML=list.length?list.map(o=>`<div class="card"><div class="row between"><div><b>#${o.order_no}</b> · ${esc(o.customer_name)} · <a href="https://wa.me/${waPhone(o.phone)}" target="_blank" rel="noopener">${esc(o.phone)}</a><div class="small">${fmtDT(o.created_at)} · ${esc(o.channel)} · ${o.delivery_method==='pickup'?'Pickup':'Delivery'}${o.needed_by?` · <b>needed ${esc(o.needed_by)}</b>`:''}</div></div><div class="fit" style="text-align:right"><div style="font:500 22px Georgia,serif">${money(o.total)}</div><span class="pill ${o.payment_status}">${o.payment_status}</span></div></div>
     <div style="margin:8px 0">${(o.order_items||[]).map(i=>`<div class="line"><span>${i.qty} × ${esc(i.name)} <span class="small">(${esc(i.category||'')})</span></span><span>${money(i.line_total)}</span></div>`).join('')}${Number(o.delivery_fee)?`<div class="line"><span>Delivery</span><span>${money(o.delivery_fee)}</span></div>`:''}</div>
-    ${o.address?`<div class="small">📍 ${esc(o.address)}</div>`:''}${o.notes?`<div class="small">📝 ${esc(o.notes)}</div>`:''}${o.notify_status?`<div class="small">💬 WhatsApp alert: <b>${esc(o.notify_status==='sent'?'sent to you':o.notify_status==='not_configured'?'not switched on':o.notify_status)}</b></div>`:''}
+    ${o.address?`<div class="small">📍 ${esc(o.address)}</div>`:''}${o.notes?`<div class="small">📝 ${esc(o.notes)}</div>`:''}${o.notify_status?`<div class="small">🔔 Order alert: <b>${esc(o.notify_status==='sent'?'sent ('+(o.notify_detail||'ok')+')':o.notify_status==='not_configured'?'not switched on':o.notify_status)}</b></div>`:''}
     <div class="row" style="margin-top:10px"><select data-status="${o.id}" style="max-width:190px">${STATUSES.map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${s[0].toUpperCase()+s.slice(1)}</option>`).join('')}</select>
     <button class="mini fit ${o.payment_status==='paid'?'secondary':'green'}" data-pay="${o.id}">${o.payment_status==='paid'?'Mark unpaid':'Mark as paid'}</button><button class="mini danger fit" data-delorder="${o.id}">Delete</button></div></div>`).join(''):'<p class="muted" style="margin-top:14px">No orders to show.</p>'}
 $('orderFilter').addEventListener('change',renderOrders);$('orderSearch').addEventListener('input',renderOrders);
