@@ -47,8 +47,11 @@ module.exports = async (req, res) => {
       lines.push({ id: L.crypto.randomUUID(), order_id: orderId, product_id: p.id, name: p.name, category: p.category, unit_price: Number(p.price), qty, line_total: lineTotal });
     }
 
+    if (!b.p_receipt) {
+      return L.send(res, 400, { error: 'Please upload your payment receipt before confirming your order.' });
+    }
     let receiptUrl = null, receiptPath = null;
-    if (b.p_receipt) {
+    {
       const rm = /^data:(image\/(jpeg|png|webp)|application\/pdf);base64,[A-Za-z0-9+/=]+$/.exec(String(b.p_receipt));
       if (!rm || String(b.p_receipt).length > 3.2e6) {
         return L.send(res, 400, { error: 'Please upload a valid receipt image (JPG/PNG/WebP) or PDF under 2 MB.' });

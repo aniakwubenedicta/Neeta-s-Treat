@@ -18,7 +18,7 @@
 a{color:inherit;text-decoration:none}.wrap{width:min(1160px,92%);margin:auto}.hidden{display:none!important}
 header{position:sticky;top:0;z-index:10;background:rgba(255,250,242,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .nav{height:78px;display:flex;align-items:center;justify-content:space-between;gap:24px}.brand{display:flex;align-items:center;gap:12px}.brand img{height:60px;width:auto}.links{display:flex;gap:28px;align-items:center;font-size:14px;color:var(--muted)}.links a:hover{color:var(--caramel)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:0;border-radius:999px;padding:13px 21px;background:var(--brown);color:white;font:650 14px inherit;font-family:inherit;cursor:pointer;transition:.2s}.btn:hover{background:var(--cocoa);transform:translateY(-1px)}.btn.outline{background:transparent;color:var(--brown);border:1px solid #b99b82}.btn.small{padding:10px 15px;font-size:13px}.btn.wa{background:var(--green)}.btn.wa:hover{background:#1c7347}.btn:disabled{opacity:.55;cursor:wait;transform:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:0;border-radius:999px;padding:13px 21px;background:var(--brown);color:white;font:650 14px inherit;font-family:inherit;cursor:pointer;transition:.2s}.btn:hover{background:var(--cocoa);transform:translateY(-1px)}.btn.outline{background:transparent;color:var(--brown);border:1px solid #b99b82}.btn.small{padding:10px 15px;font-size:13px}.btn.wa{background:var(--green)}.btn.wa:hover{background:#1c7347}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
 .cart-btn{position:relative}.cart-count{background:var(--caramel);color:#fff;border-radius:999px;min-width:21px;height:21px;padding:0 6px;font-size:12px;display:inline-flex;align-items:center;justify-content:center}
 .hero{padding:66px 0 76px;background:radial-gradient(circle at 83% 30%,#f0ddc5 0,transparent 30%),linear-gradient(120deg,#f7f0e5,#fffaf2 65%)}.hero-grid{display:grid;grid-template-columns:1.03fr .97fr;align-items:center;gap:52px}.eyebrow{text-transform:uppercase;letter-spacing:3px;color:var(--caramel);font-size:11px;font-weight:800}.hero h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(46px,6vw,76px);line-height:1.02;letter-spacing:-2.5px;margin:18px 0 18px;font-weight:500}.hero h1 em{color:var(--caramel);font-weight:500}.hero p{color:var(--muted);max-width:490px;font-size:17px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.hero-note{font-size:12px!important;margin-top:20px}.hero-visual{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:10px}.hero-visual img{width:min(100%,500px);height:auto}.hero-tagline{font:italic 500 26px/1.25 Georgia,serif;color:var(--cocoa);max-width:340px}.ph{height:210px;display:flex;align-items:center;justify-content:center;font-size:64px;background:linear-gradient(160deg,#f8e8d0,#efd2ae)}
 section{padding:78px 0}.section-head{text-align:center;max-width:650px;margin:0 auto 38px}.section-head h2{font:500 clamp(32px,4vw,46px)/1.1 Georgia,serif;margin:10px 0}.section-head p{color:var(--muted);margin:0}.product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}.product{position:relative;background:white;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px #4b281908}.product img{width:100%;height:210px;object-fit:cover;display:block}.product-body{padding:18px}.product h3{font:500 23px Georgia,serif;margin:0 0 7px}.product p{font-size:13px;color:var(--muted);min-height:40px;margin:0 0 14px}.text-link{font-size:13px;font-weight:750;color:var(--caramel)}
@@ -106,7 +106,7 @@ footer{padding:34px 0;background:#321b12;color:#f8ebdd}.footer-row{display:flex;
         <div class="actions">
           <button class="btn" type="submit" id="placeBtn">Place your order</button>
         </div>
-        <p class="hint" id="payHint"></p>
+        <p class="hint" id="payHint">Kindly place your orders and complete payment so we can proceed with processing your order. Thank you!!!</p>
       </form>
     </div>
     <div id="doneView" class="done hidden"></div>
@@ -130,15 +130,15 @@ footer{padding:34px 0;background:#321b12;color:#f8ebdd}.footer-row{display:flex;
       <div class="acct-row"><span>Account name</span><b id="payAcctName">Aniakwu Benedicta O</b></div>
     </div>
     <div class="receipt-box">
-      <label for="receiptFile" style="margin:0;font-size:13px;font-weight:700;display:block">Upload payment receipt (screenshot or PDF)</label>
-      <div class="hint" style="margin:2px 0 6px">Optional, but helps us verify and start your order faster.</div>
-      <input id="receiptFile" type="file" accept="image/jpeg,image/png,image/webp,application/pdf">
+      <label for="receiptFile" style="margin:0;font-size:13px;font-weight:700;display:block">Upload payment receipt (screenshot or PDF) *</label>
+      <div class="hint" style="margin:2px 0 6px">Required — upload your payment receipt to enable <b>Confirm order</b>.</div>
+      <input id="receiptFile" type="file" accept="image/jpeg,image/png,image/webp,application/pdf" required>
       <img id="receiptPreview" class="receipt-prev hidden" alt="Payment receipt preview">
       <div id="receiptName" class="hint hidden"></div>
     </div>
     <div class="err hidden" id="payErr" role="alert"></div>
     <div class="actions">
-      <button class="btn" type="button" id="confirmOrderBtn">Confirm order</button>
+      <button class="btn" type="button" id="confirmOrderBtn" disabled>Confirm order</button>
       <button class="btn outline" type="button" id="payBackBtn">Back to basket</button>
     </div>
   </div>
@@ -193,7 +193,6 @@ function applySettings(){
   document.querySelectorAll('[data-wa-display]').forEach(e=>e.textContent='0'+n.replace(/^234/,''));
   document.querySelectorAll('[data-delivery-info]').forEach(e=>e.textContent=s.delivery_info||'');
   $('#leadNote').textContent=s.lead_time_note||'';
-  $('#payHint').textContent=s.payment_instructions||'';
 }
 const fee=()=>$('input[name=method]:checked').value==='delivery'?Number(state.settings.delivery_fee||0):0;
 
@@ -288,6 +287,7 @@ function compressReceipt(file){
 function openPayModal(d){
   state.pendingOrder=d;state.receiptDataUrl=null;
   $('#receiptFile').value='';$('#receiptPreview').classList.add('hidden');$('#receiptName').classList.add('hidden');setPayErr('');
+  $('#confirmOrderBtn').disabled=true;
   const total=subtotal()+fee();
   $('#payAmount').textContent=naira(total);
   $('#payBank').textContent=state.settings.bank_name||'Access Bank';
@@ -299,13 +299,15 @@ function closePayModal(){$('#payModal').classList.add('hidden');state.pendingOrd
 
 $('#receiptFile').addEventListener('change',async()=>{
   const f=$('#receiptFile').files[0];setPayErr('');state.receiptDataUrl=null;
+  $('#confirmOrderBtn').disabled=true;
   $('#receiptPreview').classList.add('hidden');$('#receiptName').classList.add('hidden');
   if(!f)return;
   try{
     const dataUrl=await compressReceipt(f);state.receiptDataUrl=dataUrl;
+    $('#confirmOrderBtn').disabled=false;
     if(f.type==='application/pdf'){$('#receiptName').textContent='📄 PDF attached: '+f.name;$('#receiptName').classList.remove('hidden')}
-    else{$('#receiptPreview').src=dataUrl;$('#receiptPreview').classList.remove('hidden');$('#receiptName').textContent='✓ Receipt attached';$('#receiptName').classList.remove('hidden')}
-  }catch(err){setPayErr(err.message);$('#receiptFile').value=''}
+    else{$('#receiptPreview').src=dataUrl;$('#receiptPreview').classList.remove('hidden');$('#receiptName').textContent='✓ Receipt uploaded — you can now confirm your order.';$('#receiptName').classList.remove('hidden')}
+  }catch(err){setPayErr(err.message);$('#receiptFile').value='';$('#confirmOrderBtn').disabled=true}
 });
 $('#copyAcctBtn').addEventListener('click',async()=>{
   const num=$('#payAcct').textContent.trim();
@@ -323,16 +325,16 @@ $('#orderForm').addEventListener('submit',e=>{
 $('#confirmOrderBtn').addEventListener('click',async()=>{
   const d=state.pendingOrder;if(!d)return;
   if(!cartItems().length){setPayErr('Your basket is empty.');return}
+  if(!state.receiptDataUrl){setPayErr('Please upload your payment receipt before confirming your order.');return}
   setPayErr('');const btn=$('#confirmOrderBtn');btn.disabled=true;btn.textContent='Confirming order…';
   try{
     const r=await record(d,'website',state.receiptDataUrl);
-    const hadReceipt=!!state.receiptDataUrl;
     closePayModal();
     $('#cartView').classList.add('hidden');const dv=$('#doneView');dv.classList.remove('hidden');
-    dv.innerHTML=`<div class="tick">✓</div><h3>Thank you, ${esc(d.name.split(' ')[0])}!</h3><p>Your order <b>#${esc(r.order_no)}</b> has been confirmed. Total: <b>${naira(r.total)}</b>.</p><div class="box"><b>What happens next</b><br>${hadReceipt?'We have received your payment receipt and will verify it shortly. ':'We have received your order. '}We'll reach out on <b>${esc(d.phone)}</b> to confirm delivery.${state.settings.payment_instructions?'<br><br>'+esc(state.settings.payment_instructions):''}</div><p style="margin-top:14px"><button class="btn outline small" type="button" id="doneClose">Back to menu</button></p>`;
+    dv.innerHTML=`<div class="tick">✓</div><h3>Thank you, ${esc(d.name.split(' ')[0])}!</h3><p>Your order <b>#${esc(r.order_no)}</b> has been confirmed. Total: <b>${naira(r.total)}</b>.</p><div class="box"><b>What happens next</b><br>We have received your payment receipt and will verify it shortly. We'll reach out on <b>${esc(d.phone)}</b> to confirm delivery.</div><p style="margin-top:14px"><button class="btn outline small" type="button" id="doneClose">Back to menu</button></p>`;
     $('#doneClose').addEventListener('click',closeCart);finish();$('#orderForm').reset();
-  }catch(err){setPayErr(err.message||'We could not confirm your order. Please try again or chat with us on WhatsApp.')}
-  finally{btn.disabled=false;btn.textContent='Confirm order'}
+  }catch(err){setPayErr(err.message||'We could not confirm your order. Please try again or chat with us on WhatsApp.');btn.disabled=!state.receiptDataUrl}
+  finally{btn.textContent='Confirm order';if(!state.receiptDataUrl)btn.disabled=true}
 });
 
 /* ---------- events ---------- */

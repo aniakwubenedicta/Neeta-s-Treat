@@ -533,6 +533,7 @@
         if (!['delivery', 'pickup'].includes(p_method)) throw new Error('Choose delivery or pickup.');
         if (p_method === 'delivery' && (!p_address || p_address.length < 5)) throw new Error('Please enter a delivery address.');
         if (!p_items.length) throw new Error('Your basket is empty.');
+        if (!args.p_receipt) throw new Error('Please upload your payment receipt before confirming your order.');
 
         let fee = 0;
         if (p_method === 'delivery') {
