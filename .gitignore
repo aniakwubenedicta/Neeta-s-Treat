@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+.vercel
+node_modules
+
+# local-only / old files (not needed on the live site)
+index.backup-original.html
+logo-original.png
+vendor/
+supabase_schema.sql
+reset_admin_password.sql
+update_content.sql
+setup_products.sql
+products_template.csv
+_headers

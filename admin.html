@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#f7f0e5">
+<title>Neetaa's Treats | Admin</title>
+<link rel="icon" href="logo.png">
+<style>
+:root{--cream:#f7f0e5;--paper:#fffaf2;--brown:#4b2819;--cocoa:#75452f;--caramel:#b96c2b;--muted:#806b5d;--line:#e8d8c5;--green:#276749;--red:#a33a2b;--amber:#b7791f}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--brown);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{width:min(1180px,95%);margin:24px auto 60px}header{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:16px;flex-wrap:wrap}
+h1,h2,h3{font-family:Georgia,serif;font-weight:500}h1{font-size:clamp(26px,4vw,36px);margin:0}h2{margin:0 0 4px}h3{margin:0}.muted{color:var(--muted)}.small{font-size:12px;color:var(--muted)}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0;box-shadow:0 10px 30px #4b28190a}.login{max-width:430px;margin:10vh auto}
+label{display:block;font-size:13px;font-weight:650;margin:12px 0 5px}input,textarea,select{width:100%;padding:11px 12px;border:1px solid #d9c7b4;border-radius:10px;background:#fff;color:var(--brown);font:inherit}textarea{min-height:76px;resize:vertical}input[type=checkbox]{width:auto}
+button,.button{border:0;border-radius:999px;background:var(--brown);color:#fff;padding:10px 16px;font:600 14px inherit;font-family:inherit;cursor:pointer;text-decoration:none;display:inline-block}button.secondary,.button.secondary{background:transparent;color:var(--brown);border:1px solid #b99b82}button.danger{background:#9b3428}button.green{background:var(--green)}button.mini{padding:6px 12px;font-size:12px}button:disabled{opacity:.55;cursor:wait}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.row>.fit,.fit{flex:initial}.hidden{display:none!important}.between{justify-content:space-between}
+.status{padding:10px 13px;border-radius:10px;background:#f2e7d8;margin:12px 0}.status.error{background:#fbe8e5;color:#842d22}.status.ok{background:#e6f3e9;color:#245b35}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px;border-bottom:1px solid var(--line);margin-bottom:4px}.tab{background:transparent;color:var(--muted);border-radius:12px 12px 0 0;padding:10px 16px;white-space:nowrap}.tab.active{background:var(--brown);color:#fff}.badge{background:var(--caramel);color:#fff;border-radius:999px;font-size:11px;padding:1px 7px;margin-left:5px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}.kpi .l{font-size:12px;color:var(--muted)}.kpi .v{font:500 26px Georgia,serif;margin:2px 0}.kpi .s{font-size:12px;color:var(--muted)}.kpi.good .v{color:var(--green)}.kpi.warn .v{color:var(--red)}
+.card{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#fff;margin-top:10px}.item{display:grid;grid-template-columns:70px 1fr auto;gap:14px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:10px;background:#fff;margin-top:10px}.item img,.placeholder{width:70px;height:70px;border-radius:9px;object-fit:cover;background:#f0e4d5}.item h3{font-size:17px}.item p{margin:2px 0;color:var(--muted);font-size:13px}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700;background:#f0e4d5}.pill.new{background:#fde8c8;color:#8a4b08}.pill.confirmed,.pill.baking{background:#dbeafe;color:#1e40af}.pill.ready{background:#e0e7ff;color:#3730a3}.pill.delivered,.pill.paid{background:#e6f3e9;color:#245b35}.pill.cancelled,.pill.unpaid,.pill.low{background:#fbe8e5;color:#842d22}.pill.ok{background:#e6f3e9;color:#245b35}
+table{width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:12px;overflow:hidden}th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}th{font-size:12px;color:var(--muted);background:#faf3e8}td.num,th.num{text-align:right}.tablewrap{overflow-x:auto;margin-top:10px}
+.bars{width:100%;height:auto}.barrow{display:grid;grid-template-columns:130px 1fr 90px;gap:10px;align-items:center;font-size:13px;margin:6px 0}.bar{height:10px;border-radius:6px;background:#efe1cf;overflow:hidden}.bar i{display:block;height:100%;background:var(--caramel)}
+.qprice{width:110px;padding:6px 8px}.preview{max-width:120px;max-height:100px;object-fit:cover;border-radius:9px;margin-top:8px}.line{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:2px 0}
+@media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}.item{grid-template-columns:56px 1fr}.item img,.placeholder{width:56px;height:56px}.item .acts{grid-column:1/-1}.barrow{grid-template-columns:90px 1fr 70px}}
+</style>
+</head>
+<body><main class="wrap">
+<header>
+  <div><div class="muted" style="letter-spacing:2px;font-size:12px">NEETAA'S TREATS</div><h1>Business dashboard</h1></div>
+  <div class="row fit"><a href="index.html" class="button secondary" target="_blank">View website ↗</a><button id="logout" class="secondary hidden">Log out</button></div>
+</header>
+
+<section id="loginPanel" class="panel login">
+  <h2>Administrator login</h2><p class="muted">Sign in with your Neetaa's Treats administrator account.</p>
+  <form id="loginForm"><label for="email">Email address</label><input id="email" type="email" autocomplete="username" required><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required><div class="row" style="margin-top:14px"><button type="submit" class="fit">Sign in</button><button type="button" id="forgotBtn" class="secondary fit">Reset password</button></div></form>
+  <div id="loginStatus" class="status hidden" role="alert"></div>
+</section>
+
+<section id="resetPanel" class="panel login hidden">
+  <h2>Set a new password</h2><p class="muted">Choose a new password for your administrator account.</p>
+  <form id="resetForm"><label for="newPass">New password (at least 6 characters)</label><input id="newPass" type="password" minlength="6" autocomplete="new-password" required><label for="confirmPass">Confirm new password</label><input id="confirmPass" type="password" minlength="6" autocomplete="new-password" required><div class="row" style="margin-top:14px"><button type="submit" class="fit">Save new password</button><button type="button" id="cancelResetBtn" class="secondary fit">Back</button></div></form>
+  <div id="resetStatus" class="status hidden" role="alert"></div>
+</section>
+
+<section id="appPanel" class="hidden">
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="dash">📊 Overview</button>
+    <button class="tab" data-tab="orders">🧾 Orders <span class="badge hidden" id="newBadge">0</span></button>
+    <button class="tab" data-tab="products">🍰 Products &amp; prices</button>
+    <button class="tab" data-tab="reviews">⭐ Reviews</button>
+    <button class="tab" data-tab="supplies">📦 Supplies &amp; costs</button>
+    <button class="tab" data-tab="settings">⚙️ Settings</button>
+  </nav>
+  <div id="msg" class="status hidden" role="status"></div>
+
+  <!-- OVERVIEW -->
+  <div id="tab-dash">
+    <div class="panel"><div class="row between"><div><h2>Sales &amp; projections</h2><div class="small">Cancelled orders are excluded. Figures update from your Orders, Supplies and Costs.</div></div>
+      <div class="fit"><select id="range" style="width:auto"><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option></select></div></div>
+      <div class="kpis" id="kpis" style="margin-top:14px"></div></div>
+    <div class="grid2"><div class="panel"><h3>Revenue per day</h3><div id="chartDaily"></div></div><div class="panel"><h3>Busiest days of the week</h3><div id="chartWeek"></div></div></div>
+    <div class="grid2"><div class="panel"><h3>Best sellers</h3><div id="topProducts"></div></div>
+      <div class="panel"><h3>Projections</h3><div id="projections"></div></div></div>
+    <div class="grid2"><div class="panel"><h3>Supplies needing attention</h3><div id="lowStock"></div></div><div class="panel"><h3>Orders by channel &amp; status</h3><div id="mix"></div></div></div>
+  </div>
+
+  <!-- ORDERS -->
+  <div id="tab-orders" class="hidden">
+    <div class="panel"><div class="row between"><div><h2>Orders</h2><div class="small">New orders from the website and WhatsApp appear here automatically (checked every minute).</div></div>
+      <div class="row fit"><button id="refreshOrders" class="secondary">Refresh</button><button id="toggleManual">+ Add order manually</button></div></div>
+      <div class="row" style="margin-top:12px"><div><select id="orderFilter"><option value="open">Open orders (not delivered / cancelled)</option><option value="all">All orders</option><option value="new">New</option><option value="confirmed">Confirmed</option><option value="baking">Baking</option><option value="ready">Ready</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option><option value="unpaid">Unpaid</option></select></div><div><input id="orderSearch" placeholder="Search name, phone or order number"></div></div>
+      <div id="orderList"></div></div>
+    <div class="panel hidden" id="manualPanel"><h2>Add an order manually</h2><div class="small">Use this for orders you agreed on WhatsApp or by phone, so your sales figures stay complete.</div>
+      <form id="manualForm"><div class="grid2"><div><label>Customer name</label><input id="m_name" required></div><div><label>Phone</label><input id="m_phone" required></div></div>
+      <div class="grid3"><div><label>Source</label><select id="m_channel"><option value="manual">Phone / in person</option><option value="whatsapp">WhatsApp</option></select></div><div><label>Delivery fee (₦)</label><input id="m_fee" type="number" min="0" value="0"></div><div><label>Payment</label><select id="m_paid"><option value="unpaid">Unpaid</option><option value="paid">Paid</option></select></div></div>
+      <label>Items</label><div class="row"><select id="m_prod"></select><input id="m_qty" type="number" min="1" value="1" style="max-width:90px" class="fit"><button type="button" id="m_add" class="secondary fit">Add item</button></div><div id="m_lines"></div>
+      <label>Notes</label><input id="m_notes"><p><button type="submit">Save order</button></p></form></div>
+  </div>
+
+  <!-- PRODUCTS -->
+  <div id="tab-products" class="hidden">
+    <div class="panel" id="formPanel"><div class="row between"><h2 id="formTitle">Add a new product</h2><span class="small">Fill in the details below and click Save — it appears on the website immediately.</span></div>
+      <form id="productForm"><input type="hidden" id="productId">
+        <div class="grid2"><div><label for="section">Where should this appear?</label><select id="section"><option value="menu">Menu item with price (under Our menu &amp; prices)</option><option value="featured">Featured showcase card (under Our treats)</option></select></div><div id="catWrap"><label for="category">Category / menu heading</label><input id="category" list="catlist" placeholder="e.g. Parfait or Plain cakes · Size 6"><datalist id="catlist"></datalist></div></div>
+        <div class="grid2"><div><label for="name">Product name / variant *</label><input id="name" required placeholder="e.g. 500 ml or Vanilla cake"></div><div id="priceWrap"><label for="price">Price (₦) *</label><input id="price" type="number" min="0" step="50" placeholder="e.g. 10000"></div></div>
+        <label for="description">Description / write-up (optional)</label><textarea id="description" placeholder="Short description shown under the product name"></textarea>
+        <div class="grid3"><div><label for="note">Small category subtitle (optional)</label><input id="note" placeholder="e.g. Classic flavours or Chilled and delicious"></div><div><label for="available">Website visibility</label><select id="available"><option value="true">Visible — show on website</option><option value="false">Hidden — hide from website</option></select></div><div><label for="instock">Stock status</label><select id="instock"><option value="true">In stock — available to order</option><option value="false">Out of stock — show "Out of stock" badge</option></select></div></div>
+        <label for="photo">Product photograph (optional)</label><input id="photo" type="file" accept="image/jpeg,image/png,image/webp"><div class="small">JPG, PNG or WebP. Automatically resized so your website stays fast.</div>
+        <img id="preview" class="preview hidden" alt="Product photo preview"><label id="removeWrap" class="hidden" style="margin-top:8px"><input type="checkbox" id="removePhoto"> Delete current photo when saving</label>
+        <div class="row" style="margin-top:16px"><button id="saveBtn" type="submit" class="fit">Save product</button><button id="cancelEdit" type="button" class="secondary fit">Clear / Cancel</button></div></form></div>
+
+    <div class="panel"><div class="row between"><div><h2>Manage existing products, prices &amp; photos</h2><div class="small">Change any price and click <b>Save price</b>, or click <b>Upload photo</b> / <b>Delete photo</b> directly on any item.</div></div><button id="newProduct" class="fit">+ Add new product</button></div>
+      <div class="row" style="margin-top:12px"><div><select id="prodFilter"><option value="all">All products (Featured + Menu)</option><option value="featured">Homepage featured cards only</option><option value="menu">Menu items with prices only</option></select></div><div><input id="prodSearch" placeholder="Search product name or category…"></div></div>
+      <input type="file" id="quickPhotoInput" class="hidden" accept="image/jpeg,image/png,image/webp">
+      <div id="products"></div></div>
+  </div>
+
+  <!-- REVIEWS -->
+  <div id="tab-reviews" class="hidden">
+    <div class="panel" id="revFormPanel"><div class="row between"><h2 id="revFormTitle">Upload a customer review</h2><span class="small">Add a written review, a WhatsApp screenshot / cake photo, or both — it shows on the website immediately.</span></div>
+      <form id="reviewForm"><input type="hidden" id="revId">
+        <div class="grid3"><div><label for="revName">Customer name *</label><input id="revName" required placeholder="e.g. Chidinma A."></div><div><label for="revItem">Treat ordered (optional)</label><input id="revItem" placeholder="e.g. Frosted Birthday Cake or Parfait"></div><div><label for="revRating">Star rating</label><select id="revRating"><option value="5">★★★★★ (5 stars)</option><option value="4">★★★★☆ (4 stars)</option><option value="3">★★★☆☆ (3 stars)</option><option value="2">★★☆☆☆ (2 stars)</option><option value="1">★☆☆☆☆ (1 star)</option></select></div></div>
+        <label for="revComment">Customer review text / comment (optional if uploading a screenshot)</label><textarea id="revComment" placeholder="What did the customer say about their treat?"></textarea>
+        <div class="grid2"><div><label for="revPhoto">Review screenshot or photo (optional)</label><input id="revPhoto" type="file" accept="image/jpeg,image/png,image/webp"><div class="small">Upload a WhatsApp chat screenshot or customer photo (JPG, PNG or WebP).</div><img id="revPreview" class="preview hidden" alt="Review photo preview"><label id="revRemoveWrap" class="hidden" style="margin-top:8px"><input type="checkbox" id="revRemovePhoto"> Delete current photo when saving</label></div><div><label for="revVisible">Visibility on website</label><select id="revVisible"><option value="true">Visible — show on website</option><option value="false">Hidden — hide from website</option></select></div></div>
+        <div class="row" style="margin-top:16px"><button id="revSaveBtn" type="submit" class="fit">Save review</button><button id="revCancelBtn" type="button" class="secondary fit">Clear / Cancel</button></div>
+      </form>
+    </div>
+    <div class="panel"><div class="row between"><div><h2>Customer reviews on your website</h2><div class="small">Manage reviews, upload screenshots, or show/hide them on the website.</div></div><button id="newReviewBtn" class="fit">+ Add new review</button></div>
+      <input type="file" id="quickRevPhotoInput" class="hidden" accept="image/jpeg,image/png,image/webp">
+      <div id="reviewList"></div>
+    </div>
+  </div>
+
+  <!-- SUPPLIES -->
+  <div id="tab-supplies" class="hidden">
+    <div class="panel"><div class="row between"><div><h2>Supplies (inventory)</h2><div class="small">Record what you buy (Restock) and what you use. “Days left” is based on your usage in the last 30 days.</div></div><button id="newSupply" class="fit">+ Add supply</button></div>
+      <div class="tablewrap"><table><thead><tr><th>Item</th><th class="num">In stock</th><th class="num">Reorder at</th><th class="num">Unit cost</th><th>Status</th><th></th></tr></thead><tbody id="supplyRows"></tbody></table></div></div>
+    <div class="panel hidden" id="supplyFormPanel"><h2 id="supplyFormTitle">Add a supply</h2>
+      <form id="supplyForm"><input type="hidden" id="s_id"><div class="grid3"><div><label>Name</label><input id="s_name" required placeholder="e.g. Flour"></div><div><label>Unit</label><input id="s_unit" required value="kg" placeholder="kg, pcs, litre…"></div><div><label>Reorder when stock is at or below</label><input id="s_reorder" type="number" min="0" step="any" value="0"></div></div>
+      <div class="grid3"><div><label>Cost per unit (₦)</label><input id="s_cost" type="number" min="0" step="any" value="0"></div><div id="s_qtyWrap"><label>Opening stock</label><input id="s_qty" type="number" step="any" value="0"></div></div>
+      <div class="row" style="margin-top:14px"><button class="fit" type="submit">Save supply</button><button class="secondary fit" type="button" id="supplyCancel">Cancel</button></div></form></div>
+    <div class="panel hidden" id="moveFormPanel"><h2 id="moveTitle">Restock</h2>
+      <form id="moveForm"><input type="hidden" id="mv_id"><input type="hidden" id="mv_mode"><div class="grid3"><div><label id="mv_qtyLabel">Quantity bought</label><input id="mv_qty" type="number" min="0.001" step="any" required></div><div id="mv_costWrap"><label>Cost per unit (₦)</label><input id="mv_cost" type="number" min="0" step="any"></div><div><label>Note (optional)</label><input id="mv_note" placeholder="e.g. Market purchase"></div></div>
+      <div class="row" style="margin-top:14px"><button class="fit" type="submit">Save</button><button class="secondary fit" type="button" id="moveCancel">Cancel</button></div></form></div>
+    <div class="panel"><div class="row between"><div><h2>Other costs</h2><div class="small">Gas, delivery, packaging, rent, ads… Supply purchases are counted automatically.</div></div></div>
+      <form id="expForm" class="row" style="align-items:flex-end"><div><label>Date</label><input id="e_date" type="date" required></div><div><label>Category</label><select id="e_cat"><option>Gas / electricity</option><option>Delivery</option><option>Packaging</option><option>Marketing</option><option>Equipment</option><option>Rent</option><option>Staff</option><option>Other</option></select></div><div><label>Description</label><input id="e_desc"></div><div><label>Amount (₦)</label><input id="e_amt" type="number" min="0" step="any" required></div><div class="fit"><button type="submit">Add</button></div></form>
+      <div class="tablewrap"><table><thead><tr><th>Date</th><th>Category</th><th>Description</th><th class="num">Amount</th><th></th></tr></thead><tbody id="expRows"></tbody></table></div></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="tab-settings" class="hidden"><div class="panel"><h2>Website settings</h2><div class="small">These appear on your public website and in WhatsApp orders.</div>
+    <form id="settingsForm"><label>WhatsApp number (international format, digits only)</label><input id="st_whatsapp_number" placeholder="2349066434486">
+      <label>Delivery fee (₦) — 0 means free / quoted on WhatsApp</label><input id="st_delivery_fee" type="number" min="0" step="50">
+      <label>Delivery information</label><input id="st_delivery_info"><label>Payment instructions (shown after an order, e.g. bank details)</label><textarea id="st_payment_instructions"></textarea>
+      <label>Ordering note (e.g. lead time)</label><input id="st_lead_time_note"><p><button type="submit">Save settings</button></p></form></div>
+    <div class="panel" id="alertPanel"><h2>WhatsApp order alerts</h2><div class="small">Every new order placed on your website is saved in <b>Orders</b> and sent to your WhatsApp automatically. Use the button to check it is working.</div>
+      <p><button type="button" id="testNotifyBtn" class="secondary">Send a test WhatsApp alert</button></p><div id="testNotifyMsg" class="status hidden" role="status"></div></div>
+    <div class="panel" id="passPanel"><h2>Change administrator password</h2><div class="small">Update the password you use to sign in to this dashboard.</div>
+      <form id="changePassForm"><div class="grid2"><div><label for="cp_new">New password</label><input id="cp_new" type="password" minlength="6" autocomplete="new-password" required></div><div><label for="cp_confirm">Confirm new password</label><input id="cp_confirm" type="password" minlength="6" autocomplete="new-password" required></div></div><p><button type="submit">Update password</button></p></form></div></div>
+</section>
+</main>
+
+<script src="store.js"></script>
+<script src="config.js"></script>
+<script>
+(function(){
+const CFG=window.NEETAA_CONFIG;
+const sb=window.supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_KEY);
+const $=id=>document.getElementById(id);
+const S={user:null,products:[],reviews:[],orders:[],supplies:[],log:[],expenses:[],settings:{},manualLines:[],tab:'dash'};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=v=>'₦'+Math.round(Number(v||0)).toLocaleString('en-NG');
+const num=v=>Number(v||0).toLocaleString('en-NG',{maximumFractionDigits:2});
+const keyOf=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const fmtDT=s=>new Date(s).toLocaleString('en-NG',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+const waPhone=p=>{let d=String(p||'').replace(/\D/g,'');if(d.startsWith('0'))d='234'+d.slice(1);return d};
+function say(msg,type=''){const el=$('msg');el.textContent=msg;el.className='status '+type;clearTimeout(say.t);if(type==='ok')say.t=setTimeout(()=>el.classList.add('hidden'),3500)}
+const fail=e=>say((e&&e.message)||'Something went wrong.','error');
+async function must(q){const r=await q;if(r.error)throw r.error;return r.data}
+
+/* ===== auth ===== */
+function showResetPanel(){$('loginPanel').classList.add('hidden');$('appPanel').classList.add('hidden');$('resetPanel').classList.remove('hidden');$('newPass').focus()}
+async function enter(user){
+  const ok=await sb.rpc('is_admin');
+  if(!ok.error&&ok.data===false){await sb.auth.signOut();throw new Error('This account is not an administrator of Neetaa\'s Treats.');}
+  S.user=user;$('loginPanel').classList.add('hidden');$('resetPanel').classList.add('hidden');$('appPanel').classList.remove('hidden');$('logout').classList.remove('hidden');
+  $('e_date').value=keyOf(new Date());
+  if(window.NeetaaStore.mode==='on')$('passPanel').innerHTML='<h2>Administrator password</h2><div class="small">Your password is set in Vercel (<b>ADMIN_PASSWORD</b>). To change it, edit it under Project → Settings → Environment Variables and redeploy.</div>';
+  else $('alertPanel').classList.add('hidden');
+  await Promise.all([loadProducts(),loadReviews().catch(()=>{}),loadSettings().catch(()=>{}),loadOrders().catch(()=>{})]);
+  await switchTab('dash');startPolling();
+}
+$('loginForm').addEventListener('submit',async e=>{e.preventDefault();$('loginStatus').classList.add('hidden');
+  try{const {data,error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error)throw error;await enter(data.user)}
+  catch(err){const el=$('loginStatus');el.textContent=err.message||'Login failed.';el.className='status error';}});
+$('forgotBtn').addEventListener('click',()=>{
+  if(window.NeetaaStore.mode==='on'){const el=$('loginStatus');el.textContent='To reset your password: in Vercel open your project → Settings → Environment Variables, change ADMIN_PASSWORD, then redeploy.';el.className='status';return}
+  showResetPanel();
+});
+$('testNotifyBtn').addEventListener('click',async()=>{
+  const el=$('testNotifyMsg'),b=$('testNotifyBtn');b.disabled=true;el.className='status';el.textContent='Sending…';
+  try{const r=await window.NeetaaStore.testNotify();
+    if(r.status==='sent'){el.textContent='Sent! Check your WhatsApp now.'+(r.detail?' ('+r.detail+')':'');el.className='status ok'}
+    else if(r.status==='not_configured'){el.textContent='Alerts are not switched on yet. In Vercel add NOTIFY_WHATSAPP and CALLMEBOT_APIKEY (see README_SETUP.txt), then redeploy.';el.className='status error'}
+    else{el.textContent='The alert could not be sent: '+(r.detail||'unknown error');el.className='status error'}
+  }catch(err){el.textContent=err.message;el.className='status error'}
+  finally{b.disabled=false}
+});
+$('resetForm').addEventListener('submit',async e=>{e.preventDefault();const p1=$('newPass').value,p2=$('confirmPass').value,el=$('resetStatus');
+  if(p1.length<6){el.textContent='Password must be at least 6 characters.';el.className='status error';return}
+  if(p1!==p2){el.textContent='Passwords do not match.';el.className='status error';return}
+  try{const {data,error}=await sb.auth.updateUser({password:p1});if(error)throw error;
+    el.textContent='Password updated! Signing you in…';el.className='status ok';
+    if(location.hash)history.replaceState(null,'',location.pathname);
+    setTimeout(()=>enter(data.user).catch(err=>{el.textContent=err.message;el.className='status error'}),700);
+  }catch(err){el.textContent=err.message||'Could not update password.';el.className='status error'}});
+$('cancelResetBtn').addEventListener('click',()=>{$('resetPanel').classList.add('hidden');if(S.user)$('appPanel').classList.remove('hidden');else $('loginPanel').classList.remove('hidden')});
+$('changePassForm').addEventListener('submit',async e=>{e.preventDefault();const p1=$('cp_new').value,p2=$('cp_confirm').value;
+  if(p1.length<6)return fail(new Error('Password must be at least 6 characters.'));
+  if(p1!==p2)return fail(new Error('Passwords do not match.'));
+  try{const {error}=await sb.auth.updateUser({password:p1});if(error)throw error;$('changePassForm').reset();say('Administrator password updated.','ok')}catch(err){fail(err)}});
+$('logout').addEventListener('click',async()=>{await sb.auth.signOut();location.reload()});
+sb.auth.onAuthStateChange((ev,session)=>{if(ev==='PASSWORD_RECOVERY')showResetPanel();else if(ev==='SIGNED_OUT'&&S.user)location.reload()});
+let poll;function startPolling(){clearInterval(poll);poll=setInterval(async()=>{try{await loadOrders();if(S.tab==='orders')renderOrders();else if(S.tab==='dash')renderDash()}catch(e){}},60000)}
+
+/* ===== tabs ===== */
+async function switchTab(t){S.tab=t;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
+  ['dash','orders','products','reviews','supplies','settings'].forEach(x=>$('tab-'+x).classList.toggle('hidden',x!==t));
+  try{if(t==='dash'){await loadSupplyData().catch(()=>{});renderDash()}if(t==='orders')renderOrders();if(t==='products')renderProducts();if(t==='reviews'){await loadReviews();renderReviewsAdmin()}if(t==='supplies'){await loadSupplyData().catch(()=>{});renderSupplies()}if(t==='settings')fillSettings()}catch(e){fail(e)}}
+$('tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(b)switchTab(b.dataset.tab)});
+
+/* ===== PRODUCTS ===== */
+function syncSectionFields(){
+  const isMenu=$('section').value==='menu';
+  $('priceWrap').classList.toggle('hidden',!isMenu);
+  $('catWrap').classList.toggle('hidden',!isMenu);
+}
+$('section').addEventListener('change',syncSectionFields);
+async function loadProducts(){
+  let r=await sb.from('products').select('*').order('sort_order',{ascending:true}).order('created_at',{ascending:true});
+  if(r.error)r=await sb.from('products').select('*').order('created_at',{ascending:true});
+  if(r.error)throw r.error;S.products=r.data||[];
+  const cats=[...new Set(S.products.map(p=>p.category).filter(Boolean))];
+  $('catlist').innerHTML=cats.map(c=>`<option value="${esc(c)}">`).join('');
+  const curFilter=$('prodFilter').value;
+  $('prodFilter').innerHTML=`<option value="all">All products (${S.products.length})</option><option value="featured">Homepage featured cards (${S.products.filter(p=>p.section==='featured').length})</option><option value="menu">All menu items with prices (${S.products.filter(p=>p.section==='menu').length})</option>`+cats.map(c=>`<option value="cat:${esc(c)}">Category: ${esc(c)}</option>`).join('');
+  if([...$('prodFilter').options].some(o=>o.value===curFilter))$('prodFilter').value=curFilter;
+  renderProducts()}
+function renderProducts(){
+  const q=$('prodSearch').value.trim().toLowerCase(),f=$('prodFilter').value,box=$('products');
+  const list=S.products.filter(p=>{
+    if(f==='featured'&&p.section!=='featured')return false;
+    if(f==='menu'&&p.section!=='menu')return false;
+    if(f.startsWith('cat:')&&(p.category||'')!==f.slice(4))return false;
+    return !q||(p.name+' '+(p.category||'')+' '+(p.description||'')).toLowerCase().includes(q);
+  });
+  if(!list.length){box.innerHTML='<p class="muted" style="margin-top:14px">No products match your filter.</p>';return}
+  box.innerHTML=list.map(p=>{const idx=S.products.indexOf(p),inStock=p.in_stock!==false;return `<article class="item">${p.image_url?`<img src="${esc(p.image_url)}" alt="${esc(p.name)}" loading="lazy">`:'<div class="placeholder" title="No photo uploaded"></div>'}
+  <div><h3>${esc(p.name)}</h3><p>${p.section==='featured'?'<b>Homepage featured card</b>':esc(p.category||'Menu')} · <span class="pill ${p.is_available?'ok':'low'}">${p.is_available?'Visible':'Hidden'}</span> · <span class="pill ${inStock?'ok':'low'}">${inStock?'In stock':'Out of stock'}</span></p>
+  ${p.description?`<p class="small">${esc(p.description)}</p>`:''}
+  ${p.section==='menu'?`<div class="row" style="gap:6px;margin-top:6px"><span class="small fit">Price (₦):</span><input class="qprice fit" type="number" min="0" step="50" value="${esc(p.price)}" data-qprice="${esc(p.id)}" aria-label="Price for ${esc(p.name)}"><button type="button" class="mini green fit" data-saveprice="${esc(p.id)}">Save price</button></div>`:''}</div>
+  <div class="acts row fit" style="flex:initial">
+    <button type="button" class="mini ${p.is_available?'green':'secondary'}" data-toggle="${esc(p.id)}" title="Toggle visibility on website">${p.is_available?'👁️ Visible':'🚫 Hidden'}</button>
+    <button type="button" class="mini ${inStock?'secondary':'danger'}" data-stock="${esc(p.id)}" title="Toggle In stock / Out of stock">${inStock?'Out of stock':'✅ Back in stock'}</button>
+    <button type="button" class="secondary mini" data-uploadphoto="${esc(p.id)}">${p.image_url?'📷 Change photo':'📷 Upload photo'}</button>
+    ${p.image_url?`<button type="button" class="danger mini" data-delphoto="${esc(p.id)}">🗑️ Delete photo</button>`:''}
+    ${(q||f!=='all')?'':`<button type="button" class="secondary mini" data-mv="up" data-id="${esc(p.id)}" ${idx===0?'disabled':''} aria-label="Move up">↑</button><button type="button" class="secondary mini" data-mv="down" data-id="${esc(p.id)}" ${idx===S.products.length-1?'disabled':''} aria-label="Move down">↓</button>`}
+    <button type="button" class="secondary mini" data-edit="${esc(p.id)}">Edit details</button>
+    <button type="button" class="danger mini" data-delete="${esc(p.id)}">Delete product</button>
+  </div></article>`}).join('')}
+$('prodSearch').addEventListener('input',renderProducts);
+$('prodFilter').addEventListener('change',renderProducts);
+let quickPhotoTargetId=null;
+$('quickPhotoInput').addEventListener('change',async()=>{
+  const file=$('quickPhotoInput').files[0],id=quickPhotoTargetId;
+  $('quickPhotoInput').value='';
+  if(!file||!id)return;
+  try{
+    if(file.size>15*1024*1024)throw new Error('Please choose an image smaller than 15 MB.');
+    if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('Please use a JPG, PNG or WebP image.');
+    say('Uploading and resizing photo…');
+    const old=S.products.find(p=>p.id===id);
+    const r=await resizeImage(file),path=`products/${crypto.randomUUID()}.${r.ext}`;
+    await must(sb.storage.from('product-images').upload(path,r.blob,{contentType:r.type,upsert:false,cacheControl:'31536000'}));
+    if(old&&(old.image_url||old.image_path)){try{await removeImage(old)}catch(x){}}
+    const image_url=sb.storage.from('product-images').getPublicUrl(path).data.publicUrl;
+    await must(sb.from('products').update({image_url,image_path:path}).eq('id',id));
+    await loadProducts();
+    say('Product photo uploaded and live on your website!','ok');
+  }catch(err){fail(err)}
+});
+async function saveQuickPrice(id){
+  const input=document.querySelector(`[data-qprice="${CSS.escape(id)}"]`);
+  if(!input)return;
+  const v=Number(input.value);
+  if(!(v>=0))throw new Error('Enter a valid price.');
+  await must(sb.from('products').update({price:v}).eq('id',id));
+  await loadProducts();
+  say('Price updated on the website!','ok');
+}
+$('products').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;try{
+  if(b.dataset.edit)editProduct(b.dataset.edit);
+  else if(b.dataset.delete)await deleteProduct(b.dataset.delete);
+  else if(b.dataset.saveprice)await saveQuickPrice(b.dataset.saveprice);
+  else if(b.dataset.uploadphoto){quickPhotoTargetId=b.dataset.uploadphoto;$('quickPhotoInput').click()}
+  else if(b.dataset.delphoto){const p=S.products.find(x=>x.id===b.dataset.delphoto);if(!p)return;try{await removeImage(p)}catch(x){}await must(sb.from('products').update({image_url:'',image_path:''}).eq('id',p.id));await loadProducts();say('Photo deleted from product.','ok')}
+  else if(b.dataset.toggle){const p=S.products.find(x=>x.id===b.dataset.toggle);await must(sb.from('products').update({is_available:!p.is_available}).eq('id',p.id));await loadProducts();say(p.is_available?'Product is now hidden from the website.':'Product is now visible on the website.','ok')}
+  else if(b.dataset.stock){const p=S.products.find(x=>x.id===b.dataset.stock),cur=p.in_stock!==false;await must(sb.from('products').update({in_stock:!cur}).eq('id',p.id));await loadProducts();say(cur?`“${p.name}” marked as Out of stock on the website.`:`“${p.name}” is back in stock on the website!`,'ok')}
+  else if(b.dataset.mv)await moveProduct(b.dataset.id,b.dataset.mv==='up'?-1:1)}catch(err){fail(err)}});
+$('products').addEventListener('change',async e=>{const i=e.target.closest('[data-qprice]');if(!i)return;try{await saveQuickPrice(i.dataset.qprice)}catch(err){fail(err)}});
+async function moveProduct(id,d){const arr=[...S.products],i=arr.findIndex(p=>p.id===id),j=i+d;if(j<0||j>=arr.length)return;[arr[i],arr[j]]=[arr[j],arr[i]];
+  await Promise.all(arr.map((p,k)=>p.sort_order!==k?must(sb.from('products').update({sort_order:k}).eq('id',p.id)):null));await loadProducts()}
+function resetForm(){$('productForm').reset();$('productId').value='';$('instock').value='true';$('available').value='true';$('preview').classList.add('hidden');$('removeWrap').classList.add('hidden');$('formTitle').textContent='Add a new product';$('saveBtn').textContent='Save product';syncSectionFields()}
+function editProduct(id){const p=S.products.find(x=>x.id===id);if(!p)return;resetForm();$('productId').value=p.id;$('section').value=p.section||'menu';syncSectionFields();$('category').value=p.category||'';$('name').value=p.name||'';$('description').value=p.description||'';$('price').value=p.price??'';$('available').value=String(p.is_available);$('instock').value=String(p.in_stock!==false);$('note').value=p.note||'';
+  if(p.image_url){$('preview').src=p.image_url;$('preview').classList.remove('hidden');$('removeWrap').classList.remove('hidden')}
+  $('formTitle').textContent='Edit product: '+p.name;$('saveBtn').textContent='Update product';$('formPanel').scrollIntoView({behavior:'smooth'});$('name').focus()}
+function pathFromUrl(u){const m=String(u||'').match(/\/product-images\/(.+?)(\?|$)/);return m?decodeURIComponent(m[1]):null}
+async function removeImage(p){const path=p.image_path||pathFromUrl(p.image_url);if(path)await sb.storage.from('product-images').remove([path])}
+async function deleteProduct(id){const p=S.products.find(x=>x.id===id);if(!p||!confirm(`Delete “${p.name}” permanently? (Use “Hide” instead if you may sell it again.)`))return;
+  await must(sb.from('products').delete().eq('id',id));try{await removeImage(p)}catch(e){}await loadProducts();say('Product deleted.','ok')}
+$('newProduct').addEventListener('click',()=>{resetForm();$('formPanel').scrollIntoView({behavior:'smooth'});$('name').focus()});$('cancelEdit').addEventListener('click',resetForm);
+$('photo').addEventListener('change',()=>{const f=$('photo').files[0];if(!f)return;$('preview').src=URL.createObjectURL(f);$('preview').classList.remove('hidden')});
+function resizeImage(file,max=1200){return new Promise((res,rej)=>{const img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{URL.revokeObjectURL(url);let {width:w,height:h}=img;const k=Math.min(1,max/Math.max(w,h));w=Math.round(w*k);h=Math.round(h*k);const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
+  c.toBlob(b=>{if(b&&b.type==='image/webp')return res({blob:b,ext:'webp',type:'image/webp'});c.toBlob(j=>j?res({blob:j,ext:'jpg',type:'image/jpeg'}):rej(new Error('Could not process the image.')),'image/jpeg',.85)},'image/webp',.82)};img.onerror=()=>rej(new Error('That file could not be read as an image.'));img.src=url})}
+$('productForm').addEventListener('submit',async e=>{e.preventDefault();const btn=$('saveBtn');btn.disabled=true;btn.textContent='Saving…';
+  try{const id=$('productId').value||null,old=id?S.products.find(p=>p.id===id):null;let image_url=old?.image_url||'',image_path=old?.image_path||'';
+    const file=$('photo').files[0];
+    if(file){if(file.size>15*1024*1024)throw new Error('Please choose an image smaller than 15 MB.');if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('Please use a JPG, PNG or WebP image.');
+      const r=await resizeImage(file),path=`products/${crypto.randomUUID()}.${r.ext}`;await must(sb.storage.from('product-images').upload(path,r.blob,{contentType:r.type,upsert:false,cacheControl:'31536000'}));
+      if(old&&(old.image_url||old.image_path)){try{await removeImage(old)}catch(x){}}
+      image_url=sb.storage.from('product-images').getPublicUrl(path).data.publicUrl;image_path=path}
+    else if($('removePhoto').checked&&old){try{await removeImage(old)}catch(x){}image_url='';image_path=''}
+    const section=$('section').value,price=section==='menu'?Number($('price').value||0):0;if(price<0)throw new Error('Price cannot be negative.');
+    const category=section==='menu'?($('category').value.trim()||'Menu'):$('category').value.trim();
+    const payload={section,name:$('name').value.trim(),description:$('description').value.trim(),category,price,image_url,image_path,is_available:$('available').value==='true',in_stock:$('instock').value==='true',note:$('note').value.trim()};
+    if(id)await must(sb.from('products').update(payload).eq('id',id));else{payload.sort_order=S.products.length?Math.max(...S.products.map(p=>p.sort_order||0))+1:0;await must(sb.from('products').insert(payload))}
+    say(id?'Product updated — live on your website!':'Product added — live on your website!','ok');resetForm();await loadProducts()}
+  catch(err){fail(err)}finally{btn.disabled=false;btn.textContent=$('productId').value?'Update product':'Save product'}});
+
+/* ===== REVIEWS ===== */
+async function loadReviews(){
+  const r=await sb.from('reviews').select('*').order('created_at',{ascending:false});
+  if(r.error)throw r.error;S.reviews=r.data||[];renderReviewsAdmin();
+}
+function renderReviewsAdmin(){
+  const box=$('reviewList');if(!box)return;
+  if(!S.reviews.length){box.innerHTML='<p class="muted" style="margin-top:14px">No customer reviews yet. Upload your first review above!</p>';return}
+  box.innerHTML=S.reviews.map(r=>{
+    const stars='★'.repeat(Math.max(1,Math.min(5,Number(r.rating)||5)));
+    return `<article class="item">${r.image_url?`<img src="${esc(r.image_url)}" alt="${esc(r.customer_name)}" loading="lazy">`:'<div class="placeholder" title="No screenshot/photo"></div>'}
+    <div><h3>${esc(r.customer_name)} <span style="color:#d97706;font-size:15px">${stars}</span></h3>
+    <p>${r.item_ordered?`<b>${esc(r.item_ordered)}</b> · `:''}<span class="pill ${r.is_visible?'ok':'low'}">${r.is_visible?'Visible on website':'Hidden'}</span></p>
+    ${r.comment?`<p class="small">“${esc(r.comment)}”</p>`:''}</div>
+    <div class="acts row fit" style="flex:initial">
+      <button type="button" class="mini ${r.is_visible?'green':'secondary'}" data-revtoggle="${esc(r.id)}">${r.is_visible?'👁️ Visible':'🚫 Hidden'}</button>
+      <button type="button" class="secondary mini" data-revphoto="${esc(r.id)}">${r.image_url?'📷 Change photo':'📷 Upload screenshot/photo'}</button>
+      ${r.image_url?`<button type="button" class="danger mini" data-revdelphoto="${esc(r.id)}">🗑️ Delete photo</button>`:''}
+      <button type="button" class="secondary mini" data-revedit="${esc(r.id)}">Edit</button>
+      <button type="button" class="danger mini" data-revdel="${esc(r.id)}">Delete</button>
+    </div></article>`;
+  }).join('');
+}
+function resetRevForm(){$('reviewForm').reset();$('revId').value='';$('revRating').value='5';$('revVisible').value='true';$('revPreview').classList.add('hidden');$('revRemoveWrap').classList.add('hidden');$('revFormTitle').textContent='Upload a customer review';$('revSaveBtn').textContent='Save review'}
+function editReview(id){const r=S.reviews.find(x=>x.id===id);if(!r)return;resetRevForm();$('revId').value=r.id;$('revName').value=r.customer_name||'';$('revItem').value=r.item_ordered||'';$('revRating').value=String(r.rating||5);$('revComment').value=r.comment||'';$('revVisible').value=String(r.is_visible!==false);
+  if(r.image_url){$('revPreview').src=r.image_url;$('revPreview').classList.remove('hidden');$('revRemoveWrap').classList.remove('hidden')}
+  $('revFormTitle').textContent='Edit review from '+r.customer_name;$('revSaveBtn').textContent='Update review';$('revFormPanel').scrollIntoView({behavior:'smooth'});$('revName').focus()}
+$('newReviewBtn').addEventListener('click',()=>{resetRevForm();$('revFormPanel').scrollIntoView({behavior:'smooth'});$('revName').focus()});
+$('revCancelBtn').addEventListener('click',resetRevForm);
+$('revPhoto').addEventListener('change',()=>{const f=$('revPhoto').files[0];if(!f)return;$('revPreview').src=URL.createObjectURL(f);$('revPreview').classList.remove('hidden')});
+let quickRevTargetId=null;
+$('quickRevPhotoInput').addEventListener('change',async()=>{
+  const file=$('quickRevPhotoInput').files[0],id=quickRevTargetId;$('quickRevPhotoInput').value='';
+  if(!file||!id)return;
+  try{
+    if(file.size>15*1024*1024)throw new Error('Please choose an image smaller than 15 MB.');
+    if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('Please use a JPG, PNG or WebP image.');
+    say('Uploading review photo…');
+    const old=S.reviews.find(x=>x.id===id),res=await resizeImage(file),path=`reviews/${crypto.randomUUID()}.${res.ext}`;
+    await must(sb.storage.from('product-images').upload(path,res.blob,{contentType:res.type,upsert:false}));
+    if(old&&old.image_path){try{await sb.storage.from('product-images').remove([old.image_path])}catch(x){}}
+    const image_url=sb.storage.from('product-images').getPublicUrl(path).data.publicUrl;
+    await must(sb.from('reviews').update({image_url,image_path:path}).eq('id',id));
+    await loadReviews();say('Review screenshot/photo uploaded and live on your website!','ok');
+  }catch(err){fail(err)}
+});
+$('reviewList').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;try{
+  if(b.dataset.revedit)editReview(b.dataset.revedit);
+  else if(b.dataset.revtoggle){const r=S.reviews.find(x=>x.id===b.dataset.revtoggle);await must(sb.from('reviews').update({is_visible:!r.is_visible}).eq('id',r.id));await loadReviews();say(r.is_visible?'Review hidden from website.':'Review is now visible on website!','ok')}
+  else if(b.dataset.revphoto){quickRevTargetId=b.dataset.revphoto;$('quickRevPhotoInput').click()}
+  else if(b.dataset.revdelphoto){const r=S.reviews.find(x=>x.id===b.dataset.revdelphoto);if(!r)return;if(r.image_path){try{await sb.storage.from('product-images').remove([r.image_path])}catch(x){}}await must(sb.from('reviews').update({image_url:'',image_path:''}).eq('id',r.id));await loadReviews();say('Review photo deleted.','ok')}
+  else if(b.dataset.revdel){const r=S.reviews.find(x=>x.id===b.dataset.revdel);if(!r||!confirm(`Delete review from “${r.customer_name}”?`))return;if(r.image_path){try{await sb.storage.from('product-images').remove([r.image_path])}catch(x){}}await must(sb.from('reviews').delete().eq('id',r.id));await loadReviews();say('Review deleted.','ok')}
+}catch(err){fail(err)}});
+$('reviewForm').addEventListener('submit',async e=>{e.preventDefault();const btn=$('revSaveBtn');btn.disabled=true;btn.textContent='Saving…';
+  try{
+    const id=$('revId').value||null,old=id?S.reviews.find(x=>x.id===id):null;
+    let image_url=old?.image_url||'',image_path=old?.image_path||'';
+    const file=$('revPhoto').files[0];
+    if(file){
+      if(file.size>15*1024*1024)throw new Error('Please choose an image smaller than 15 MB.');
+      if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('Please use a JPG, PNG or WebP image.');
+      const res=await resizeImage(file),path=`reviews/${crypto.randomUUID()}.${res.ext}`;
+      await must(sb.storage.from('product-images').upload(path,res.blob,{contentType:res.type,upsert:false}));
+      if(old&&old.image_path){try{await sb.storage.from('product-images').remove([old.image_path])}catch(x){}}
+      image_url=sb.storage.from('product-images').getPublicUrl(path).data.publicUrl;image_path=path;
+    }else if($('revRemovePhoto').checked&&old){
+      if(old.image_path){try{await sb.storage.from('product-images').remove([old.image_path])}catch(x){}}
+      image_url='';image_path='';
+    }
+    const comment=$('revComment').value.trim();
+    if(!comment&&!image_url)throw new Error('Please enter the customer review text or upload a review screenshot/photo.');
+    const payload={customer_name:$('revName').value.trim(),item_ordered:$('revItem').value.trim(),rating:Number($('revRating').value||5),comment,image_url,image_path,is_visible:$('revVisible').value==='true'};
+    if(id)await must(sb.from('reviews').update(payload).eq('id',id));
+    else await must(sb.from('reviews').insert(payload));
+    say(id?'Review updated on your website!':'Customer review uploaded to your website!','ok');
+    resetRevForm();await loadReviews();
+  }catch(err){fail(err)}finally{btn.disabled=false;btn.textContent=$('revId').value?'Update review':'Save review'}});
+
+/* ===== ORDERS ===== */
+async function loadOrders(){S.orders=await must(sb.from('orders').select('*,order_items(*)').order('created_at',{ascending:false}).limit(1000));
+  const n=S.orders.filter(o=>o.status==='new').length;$('newBadge').textContent=n;$('newBadge').classList.toggle('hidden',!n);document.title=(n?`(${n}) `:'')+"Neetaa's Treats | Admin"}
+const STATUSES=['new','confirmed','baking','ready','delivered','cancelled'];
+function renderOrders(){
+  const f=$('orderFilter').value,q=$('orderSearch').value.trim().toLowerCase();
+  let list=S.orders.filter(o=>f==='all'||(f==='open'?!['delivered','cancelled'].includes(o.status):f==='unpaid'?(o.payment_status==='unpaid'&&o.status!=='cancelled'):o.status===f));
+  if(q)list=list.filter(o=>(o.customer_name+' '+o.phone+' #'+o.order_no).toLowerCase().includes(q));
+  $('orderList').innerHTML=list.length?list.map(o=>`<div class="card"><div class="row between"><div><b>#${o.order_no}</b> · ${esc(o.customer_name)} · <a href="https://wa.me/${waPhone(o.phone)}" target="_blank" rel="noopener">${esc(o.phone)}</a><div class="small">${fmtDT(o.created_at)} · ${esc(o.channel)} · ${o.delivery_method==='pickup'?'Pickup':'Delivery'}${o.needed_by?` · <b>needed ${esc(o.needed_by)}</b>`:''}</div></div><div class="fit" style="text-align:right"><div style="font:500 22px Georgia,serif">${money(o.total)}</div><span class="pill ${o.payment_status}">${o.payment_status}</span></div></div>
+    <div style="margin:8px 0">${(o.order_items||[]).map(i=>`<div class="line"><span>${i.qty} × ${esc(i.name)} <span class="small">(${esc(i.category||'')})</span></span><span>${money(i.line_total)}</span></div>`).join('')}${Number(o.delivery_fee)?`<div class="line"><span>Delivery</span><span>${money(o.delivery_fee)}</span></div>`:''}</div>
+    ${o.address?`<div class="small">📍 ${esc(o.address)}</div>`:''}${o.notes?`<div class="small">📝 ${esc(o.notes)}</div>`:''}${o.notify_status?`<div class="small">💬 WhatsApp alert: <b>${esc(o.notify_status==='sent'?'sent to you':o.notify_status==='not_configured'?'not switched on':o.notify_status)}</b></div>`:''}
+    <div class="row" style="margin-top:10px"><select data-status="${o.id}" style="max-width:190px">${STATUSES.map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${s[0].toUpperCase()+s.slice(1)}</option>`).join('')}</select>
+    <button class="mini fit ${o.payment_status==='paid'?'secondary':'green'}" data-pay="${o.id}">${o.payment_status==='paid'?'Mark unpaid':'Mark as paid'}</button><button class="mini danger fit" data-delorder="${o.id}">Delete</button></div></div>`).join(''):'<p class="muted" style="margin-top:14px">No orders to show.</p>'}
+$('orderFilter').addEventListener('change',renderOrders);$('orderSearch').addEventListener('input',renderOrders);
+$('refreshOrders').addEventListener('click',async()=>{try{await loadOrders();renderOrders();say('Orders refreshed.','ok')}catch(e){fail(e)}});
+$('orderList').addEventListener('change',async e=>{const s=e.target.closest('[data-status]');if(!s)return;try{await must(sb.from('orders').update({status:s.value}).eq('id',s.dataset.status));await loadOrders();renderOrders();say('Order status updated.','ok')}catch(err){fail(err)}});
+$('orderList').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;try{
+  if(b.dataset.pay){const o=S.orders.find(x=>x.id===b.dataset.pay);await must(sb.from('orders').update({payment_status:o.payment_status==='paid'?'unpaid':'paid'}).eq('id',o.id));await loadOrders();renderOrders()}
+  if(b.dataset.delorder){const o=S.orders.find(x=>x.id===b.dataset.delorder);if(!confirm(`Delete order #${o.order_no} permanently? Consider setting it to Cancelled instead.`))return;await must(sb.from('orders').delete().eq('id',o.id));await loadOrders();renderOrders()}}catch(err){fail(err)}});
+// manual order
+$('toggleManual').addEventListener('click',()=>{$('manualPanel').classList.toggle('hidden');$('m_prod').innerHTML=S.products.filter(p=>p.section==='menu').map(p=>`<option value="${esc(p.id)}">${esc(p.category||'')} — ${esc(p.name)} (${money(p.price)})</option>`).join('')});
+function renderManual(){$('m_lines').innerHTML=S.manualLines.map((l,i)=>`<div class="line"><span>${l.qty} × ${esc(l.name)}</span><span>${money(l.price*l.qty)} <button type="button" class="mini danger" data-rm="${i}">×</button></span></div>`).join('')+(S.manualLines.length?`<div class="line"><b>Subtotal</b><b>${money(S.manualLines.reduce((s,l)=>s+l.price*l.qty,0))}</b></div>`:'')}
+$('m_add').addEventListener('click',()=>{const p=S.products.find(x=>x.id===$('m_prod').value),q=Math.max(1,parseInt($('m_qty').value)||1);if(!p)return;S.manualLines.push({id:p.id,name:p.name,category:p.category,price:Number(p.price),qty:q});renderManual()});
+$('m_lines').addEventListener('click',e=>{const b=e.target.closest('[data-rm]');if(b){S.manualLines.splice(+b.dataset.rm,1);renderManual()}});
+$('manualForm').addEventListener('submit',async e=>{e.preventDefault();try{if(!S.manualLines.length)throw new Error('Add at least one item.');
+  const sub=S.manualLines.reduce((s,l)=>s+l.price*l.qty,0),fee=Math.max(0,Number($('m_fee').value||0));
+  const o=await must(sb.from('orders').insert({customer_name:$('m_name').value.trim(),phone:$('m_phone').value.trim(),channel:$('m_channel').value,status:'confirmed',payment_status:$('m_paid').value,delivery_method:fee?'delivery':'pickup',delivery_fee:fee,subtotal:sub,total:sub+fee,notes:$('m_notes').value.trim()||null}).select().single());
+  await must(sb.from('order_items').insert(S.manualLines.map(l=>({order_id:o.id,product_id:l.id,name:l.name,category:l.category,unit_price:l.price,qty:l.qty,line_total:l.price*l.qty}))));
+  S.manualLines=[];renderManual();$('manualForm').reset();$('manualPanel').classList.add('hidden');await loadOrders();renderOrders();say('Order added.','ok')}catch(err){fail(err)}});
+
+/* ===== SUPPLIES & COSTS ===== */
+async function loadSupplyData(){
+  const since=new Date(Date.now()-120*864e5).toISOString();
+  [S.supplies,S.log,S.expenses]=await Promise.all([must(sb.from('supplies').select('*').order('name')),must(sb.from('supply_log').select('*').gte('created_at',since).limit(5000)),must(sb.from('expenses').select('*').gte('spent_on',since.slice(0,10)).order('spent_on',{ascending:false}).limit(1000))])}
+function usagePerDay(id){const since=Date.now()-30*864e5;const used=S.log.filter(l=>l.supply_id===id&&Number(l.change)<0&&new Date(l.created_at).getTime()>=since).reduce((s,l)=>s-Number(l.change),0);return used/30}
+function daysLeft(s){const u=usagePerDay(s.id);return u>0?Number(s.quantity)/u:null}
+function renderSupplies(){
+  $('supplyRows').innerHTML=S.supplies.length?S.supplies.map(s=>{const low=Number(s.quantity)<=Number(s.reorder_level),d=daysLeft(s);return `<tr><td><b>${esc(s.name)}</b></td><td class="num">${num(s.quantity)} ${esc(s.unit)}</td><td class="num">${num(s.reorder_level)}</td><td class="num">${money(s.unit_cost)}</td><td><span class="pill ${low?'low':'ok'}">${low?'Reorder':'OK'}</span>${d!==null?`<div class="small">≈ ${d<1?'<1':Math.floor(d)} day(s) left</div>`:''}</td>
+    <td style="white-space:nowrap"><button class="mini green" data-restock="${s.id}">Restock</button> <button class="mini secondary" data-use="${s.id}">Used</button> <button class="mini secondary" data-editsup="${s.id}">Edit</button> <button class="mini danger" data-delsup="${s.id}">×</button></td></tr>`}).join(''):'<tr><td colspan="6" class="muted">No supplies yet.</td></tr>';
+  $('expRows').innerHTML=S.expenses.length?S.expenses.slice(0,60).map(x=>`<tr><td>${esc(x.spent_on)}</td><td>${esc(x.category)}</td><td>${esc(x.description||'')}</td><td class="num">${money(x.amount)}</td><td><button class="mini danger" data-delexp="${x.id}">×</button></td></tr>`).join(''):'<tr><td colspan="5" class="muted">No costs recorded yet.</td></tr>'}
+function openMove(id,mode){const s=S.supplies.find(x=>x.id===id);$('mv_id').value=id;$('mv_mode').value=mode;$('moveTitle').textContent=(mode==='restock'?'Restock — ':'Record usage — ')+s.name;$('mv_qtyLabel').textContent=mode==='restock'?`Quantity bought (${s.unit})`:`Quantity used / wasted (${s.unit})`;$('mv_costWrap').classList.toggle('hidden',mode!=='restock');$('mv_cost').value=s.unit_cost||'';$('mv_qty').value='';$('mv_note').value='';$('moveFormPanel').classList.remove('hidden');$('moveFormPanel').scrollIntoView({behavior:'smooth'});$('mv_qty').focus()}
+$('supplyRows').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;try{
+  if(b.dataset.restock)openMove(b.dataset.restock,'restock');else if(b.dataset.use)openMove(b.dataset.use,'use');
+  else if(b.dataset.editsup){const s=S.supplies.find(x=>x.id===b.dataset.editsup);$('s_id').value=s.id;$('s_name').value=s.name;$('s_unit').value=s.unit;$('s_reorder').value=s.reorder_level;$('s_cost').value=s.unit_cost;$('s_qtyWrap').classList.add('hidden');$('supplyFormTitle').textContent='Edit supply';$('supplyFormPanel').classList.remove('hidden');$('supplyFormPanel').scrollIntoView({behavior:'smooth'})}
+  else if(b.dataset.delsup){const s=S.supplies.find(x=>x.id===b.dataset.delsup);if(!confirm(`Delete “${s.name}” and its history?`))return;await must(sb.from('supplies').delete().eq('id',s.id));await loadSupplyData();renderSupplies()}}catch(err){fail(err)}});
+$('newSupply').addEventListener('click',()=>{$('supplyForm').reset();$('s_id').value='';$('s_qtyWrap').classList.remove('hidden');$('supplyFormTitle').textContent='Add a supply';$('supplyFormPanel').classList.remove('hidden');$('supplyFormPanel').scrollIntoView({behavior:'smooth'})});
+$('supplyCancel').addEventListener('click',()=>$('supplyFormPanel').classList.add('hidden'));$('moveCancel').addEventListener('click',()=>$('moveFormPanel').classList.add('hidden'));
+$('supplyForm').addEventListener('submit',async e=>{e.preventDefault();try{const id=$('s_id').value,row={name:$('s_name').value.trim(),unit:$('s_unit').value.trim(),reorder_level:Number($('s_reorder').value||0),unit_cost:Number($('s_cost').value||0)};
+  if(id)await must(sb.from('supplies').update(row).eq('id',id));else{const q=Number($('s_qty').value||0);const s=await must(sb.from('supplies').insert(row).select().single());if(q)await must(sb.from('supply_log').insert({supply_id:s.id,change:q,unit_cost:row.unit_cost||null,note:'Opening stock'}))}
+  $('supplyFormPanel').classList.add('hidden');await loadSupplyData();renderSupplies();say('Supply saved.','ok')}catch(err){fail(err)}});
+$('moveForm').addEventListener('submit',async e=>{e.preventDefault();try{const mode=$('mv_mode').value,q=Number($('mv_qty').value);if(!(q>0))throw new Error('Enter a quantity above zero.');
+  await must(sb.from('supply_log').insert({supply_id:$('mv_id').value,change:mode==='restock'?q:-q,unit_cost:mode==='restock'&&$('mv_cost').value!==''?Number($('mv_cost').value):null,note:$('mv_note').value.trim()||null}));
+  $('moveFormPanel').classList.add('hidden');await loadSupplyData();renderSupplies();say(mode==='restock'?'Stock added.':'Usage recorded.','ok')}catch(err){fail(err)}});
+$('expForm').addEventListener('submit',async e=>{e.preventDefault();try{await must(sb.from('expenses').insert({spent_on:$('e_date').value,category:$('e_cat').value,description:$('e_desc').value.trim()||null,amount:Number($('e_amt').value)}));$('e_desc').value='';$('e_amt').value='';await loadSupplyData();renderSupplies();say('Cost added.','ok')}catch(err){fail(err)}});
+$('expRows').addEventListener('click',async e=>{const b=e.target.closest('[data-delexp]');if(!b||!confirm('Delete this cost?'))return;try{await must(sb.from('expenses').delete().eq('id',b.dataset.delexp));await loadSupplyData();renderSupplies()}catch(err){fail(err)}});
+
+/* ===== SETTINGS ===== */
+const SET_KEYS=['whatsapp_number','delivery_fee','delivery_info','payment_instructions','lead_time_note'];
+async function loadSettings(){const rows=await must(sb.from('settings').select('*'));S.settings={};rows.forEach(r=>S.settings[r.key]=r.value)}
+function fillSettings(){SET_KEYS.forEach(k=>$('st_'+k).value=S.settings[k]||'')}
+$('settingsForm').addEventListener('submit',async e=>{e.preventDefault();try{const rows=SET_KEYS.map(k=>({key:k,value:String($('st_'+k).value||'').trim()}));rows.find(r=>r.key==='whatsapp_number').value=rows.find(r=>r.key==='whatsapp_number').value.replace(/\D/g,'');await must(sb.from('settings').upsert(rows));await loadSettings();say('Settings saved — live on your website.','ok')}catch(err){fail(err)}});
+
+/* ===== OVERVIEW: analytics & projections ===== */
+function bars(vals,labels,fmt=money){const W=600,H=170,pad=22,max=Math.max(1,...vals),bw=(W-pad*2)/vals.length;
+  const rects=vals.map((v,i)=>{const h=Math.round((H-pad*2)*v/max);return `<rect x="${(pad+i*bw+bw*.12).toFixed(1)}" y="${H-pad-h}" width="${(bw*.76).toFixed(1)}" height="${h}" rx="3" fill="#b96c2b"><title>${esc(labels[i])}: ${esc(fmt(v))}</title></rect>`}).join('');
+  const step=Math.ceil(vals.length/8),tx=labels.map((l,i)=>i%step===0?`<text x="${(pad+i*bw+bw/2).toFixed(1)}" y="${H-5}" font-size="10" text-anchor="middle" fill="#806b5d">${esc(l)}</text>`:'').join('');
+  return `<svg class="bars" viewBox="0 0 ${W} ${H}" role="img"><text x="${pad}" y="12" font-size="10" fill="#806b5d">max ${esc(fmt(max))}</text><line x1="${pad}" y1="${H-pad}" x2="${W-pad}" y2="${H-pad}" stroke="#e8d8c5"/>${rects}${tx}</svg>`}
+const bar=(label,val,max,right)=>`<div class="barrow"><span>${esc(label)}</span><div class="bar"><i style="width:${max?Math.max(2,val/max*100):0}%"></i></div><span style="text-align:right">${right}</span></div>`;
+function renderDash(){
+  const days=+$('range').value,now=new Date(),dayMs=864e5,valid=S.orders.filter(o=>o.status!=='cancelled');
+  const start=new Date(now);start.setHours(0,0,0,0);start.setDate(start.getDate()-(days-1));
+  const inR=valid.filter(o=>new Date(o.created_at)>=start);
+  const sum=a=>a.reduce((s,o)=>s+Number(o.total),0),rev=sum(inR),paid=sum(inR.filter(o=>o.payment_status==='paid'));
+  const todayKey=keyOf(now),todayO=valid.filter(o=>keyOf(new Date(o.created_at))===todayKey);
+  const daily=new Map();valid.forEach(o=>{const k=keyOf(new Date(o.created_at));daily.set(k,(daily.get(k)||0)+Number(o.total))});
+  const series=[],labels=[];for(let i=days-1;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);series.push(daily.get(keyOf(d))||0);labels.push(d.toLocaleDateString('en-NG',{day:'numeric',month:'short'}))}
+  const last=n=>{let t=0;for(let i=0;i<n;i++){const d=new Date(now);d.setDate(d.getDate()-i);t+=daily.get(keyOf(d))||0}return t};
+  const prev=n=>{let t=0;for(let i=n;i<2*n;i++){const d=new Date(now);d.setDate(d.getDate()-i);t+=daily.get(keyOf(d))||0}return t};
+  const r14=last(14)/14,p14=prev(14)/14,trend=p14>0?Math.min(1.3,Math.max(.7,r14/p14)):1,rate=r14*(1+(trend-1)/2);
+  const mStart=new Date(now.getFullYear(),now.getMonth(),1),dim=new Date(now.getFullYear(),now.getMonth()+1,0).getDate(),left=dim-now.getDate();
+  const mtd=sum(valid.filter(o=>new Date(o.created_at)>=mStart)),mEnd=mtd+rate*left;
+  const lmStart=new Date(now.getFullYear(),now.getMonth()-1,1),lm=sum(valid.filter(o=>{const d=new Date(o.created_at);return d>=lmStart&&d<mStart}));
+  const startKey=start.getTime();
+  const buy=S.log.filter(l=>Number(l.change)>0&&l.unit_cost!=null&&new Date(l.created_at).getTime()>=startKey&&l.note!=='Opening stock').reduce((s,l)=>s+Number(l.change)*Number(l.unit_cost),0);
+  const exp=S.expenses.filter(x=>new Date(x.spent_on).getTime()>=startKey-dayMs).reduce((s,x)=>s+Number(x.amount),0);
+  const profit=rev-buy-exp,lowN=S.supplies.filter(s=>Number(s.quantity)<=Number(s.reorder_level)).length,newN=S.orders.filter(o=>o.status==='new').length;
+  const unpaid=sum(valid.filter(o=>o.payment_status==='unpaid'));
+  const k=(l,v,s,c='')=>`<div class="kpi ${c}"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`;
+  $('kpis').innerHTML=k('Today',money(sum(todayO)),`${todayO.length} order(s)`)+k(`Revenue (${days} days)`,money(rev),`${inR.length} orders · avg ${money(inR.length?rev/inR.length:0)}`)+k('Paid / still owed',`${money(paid)}`,`${money(rev-paid)} unpaid in this period`)+k('New orders waiting',newN,'need confirming',newN?'warn':'')+k('Costs (supplies + other)',money(buy+exp),`supplies ${money(buy)} · other ${money(exp)}`)+k('Estimated profit',money(profit),rev?`${Math.round(profit/rev*100)}% margin`:'—',profit>=0?'good':'warn')+k('Supplies to reorder',lowN,lowN?'see list below':'all stocked',lowN?'warn':'good');
+  $('chartDaily').innerHTML=bars(series,labels);
+  const wd=[0,0,0,0,0,0,0];inR.forEach(o=>wd[new Date(o.created_at).getDay()]+=Number(o.total));const names=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];$('chartWeek').innerHTML=bars(wd,names);
+  const prod=new Map();inR.forEach(o=>(o.order_items||[]).forEach(i=>{const key=(i.category||'')+' — '+i.name,e=prod.get(key)||{q:0,r:0};e.q+=i.qty;e.r+=Number(i.line_total);prod.set(key,e)}));
+  const top=[...prod.entries()].sort((a,b)=>b[1].r-a[1].r).slice(0,8),mx=top.length?top[0][1].r:0;
+  $('topProducts').innerHTML=top.length?top.map(([n,e])=>bar(n,e.r,mx,`${money(e.r)}<div class="small">${e.q} sold</div>`)).join(''):'<p class="muted">No sales in this period yet.</p>';
+  const enough=valid.length>=5&&(now-new Date(valid[valid.length-1].created_at))/dayMs>=7;
+  $('projections').innerHTML=`<div class="line"><span>This month so far</span><b>${money(mtd)}</b></div><div class="line"><span>Last month</span><b>${money(lm)}</b></div><div class="line"><span>Projected end of this month</span><b>${money(mEnd)}</b></div><div class="line"><span>Expected next 7 days</span><b>${money(rate*7)}</b></div><div class="line"><span>Expected next 30 days</span><b>${money(rate*30)}</b></div><div class="line"><span>Sales trend (last 14 vs previous 14 days)</span><b style="color:${trend>=1?'var(--green)':'var(--red)'}">${p14>0?(trend>=1?'▲ ':'▼ ')+Math.abs(Math.round((r14/p14-1)*100))+'%':'not enough data'}</b></div><div class="line"><span>Money still to collect (unpaid orders)</span><b>${money(unpaid)}</b></div><p class="small" style="margin-top:8px">${enough?'Forecast = your last 14 days’ daily average, nudged by the recent trend.':'Forecasts get more reliable after a few weeks of recorded orders.'}</p>`;
+  const att=S.supplies.map(s=>({s,d:daysLeft(s),low:Number(s.quantity)<=Number(s.reorder_level)})).filter(x=>x.low||(x.d!==null&&x.d<=7)).sort((a,b)=>(a.d??99)-(b.d??99));
+  $('lowStock').innerHTML=att.length?att.map(({s,d,low})=>`<div class="line"><span>${esc(s.name)}</span><span><b>${num(s.quantity)} ${esc(s.unit)}</b> ${low?'<span class="pill low">Reorder</span>':''}${d!==null?` <span class="small">~${d<1?'<1':Math.floor(d)}d left</span>`:''}</span></div>`).join(''):'<p class="muted">Everything is stocked. 🎉</p>';
+  const ch={},st={};inR.forEach(o=>{ch[o.channel]=(ch[o.channel]||0)+1});S.orders.forEach(o=>{st[o.status]=(st[o.status]||0)+1});
+  $('mix').innerHTML='<div class="small">Channel (selected period)</div>'+(Object.keys(ch).length?Object.entries(ch).map(([c,n])=>`<div class="line"><span>${esc(c)}</span><b>${n}</b></div>`).join(''):'<div class="small">—</div>')+'<div class="small" style="margin-top:10px">Order status (all time)</div>'+STATUSES.filter(s=>st[s]).map(s=>`<div class="line"><span class="pill ${s}">${s}</span><b>${st[s]}</b></div>`).join('');
+}
+$('range').addEventListener('change',renderDash);
+
+/* ===== boot ===== */
+(async()=>{
+  if(location.hash.includes('type=recovery')){showResetPanel();return}
+  const {data}=await sb.auth.getSession();if(data.session){try{await enter(data.session.user)}catch(e){const el=$('loginStatus');el.textContent=e.message;el.className='status error'}}
+})();
+})();
+</script>
+</body>
+</html>

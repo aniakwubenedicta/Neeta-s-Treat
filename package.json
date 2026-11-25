@@ -1,0 +1,7 @@
+{
+  "name": "neetaas-treats",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Neetaa's Treats - website, online ordering and owner dashboard",
+  "engines": { "node": ">=18" }
+}
